@@ -1,0 +1,4 @@
+#!/bin/sh
+make &&
+./update_image.sh &&
+qemu -fda floppy.img
