@@ -1,3 +1,4 @@
 void putch(char ch);
 void clr();
-void printstring(char *);
+void puts(char *);
+void putint(int i);
