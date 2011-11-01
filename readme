@@ -3,3 +3,6 @@ redoing from interrupt.
 just going through net foundthis good article for virtual memory 
 http://wiki.osdev.org/Setting_Up_Paging
 
+date 1/10/11 --
+redo all the interrupt task.Took help from the http://www.jamesmolloy.co.uk/tutorial_html/index.html and http://www.osdever.net/bkerndev/Docs/idt.htm.
+Nearly all the basic feature of interrupt are now done.Next time I will be doing PIT and keyboard isr. bye...
