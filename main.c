@@ -12,6 +12,7 @@ int main(struct multiboot *mboot_ptr)
 	asm volatile ("int $0x1");
 	asm volatile ("int $0x0");
 	asm volatile ("int $0x2");
+	asm volatile("sti");
 //	clr();
 //	test();
 	puts("rajnesh\n");

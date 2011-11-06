@@ -10,3 +10,7 @@ struct regs
 typedef struct regs registers_t;
 //structure defination taken from site http://www.osdever.net/bkerndev/Docs/isrs.htm
 
+typedef  void (*irq_handler)(registers_t *r) ;
+void attachirqhandler(irq_handler fun, int irq_number);
+void initializeidt();
+

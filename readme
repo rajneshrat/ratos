@@ -6,3 +6,9 @@ http://wiki.osdev.org/Setting_Up_Paging
 date 1/10/11 --
 redo all the interrupt task.Took help from the http://www.jamesmolloy.co.uk/tutorial_html/index.html and http://www.osdever.net/bkerndev/Docs/idt.htm.
 Nearly all the basic feature of interrupt are now done.Next time I will be doing PIT and keyboard isr. bye...
+
+date 6/10/11
+I competed the keyboard driver and pit today.
+i just wrote the handler for both these and rest was already there.
+right now I have written a common handler for isr and normal software interrupts, divide by zero, etc.
+Next time I will do virtual memory implementation.

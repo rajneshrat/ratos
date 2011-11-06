@@ -6,3 +6,5 @@ typedef unsigned char uint8;
 typedef char int8;
 
 void outb(uint16 port, uint8 value);
+uint16 inw(uint16 port);
+uint8 inb(uint16 port);

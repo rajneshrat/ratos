@@ -18,9 +18,10 @@ struct idt_ptr
 typedef struct IDTDescr IDTDescr_t;
 typedef struct idt_ptr idt_ptr_t;
 
-void initializeidt();
-
 extern void isr0();
 extern void isr1();
 extern void isr2();
+extern void isr8();
+extern void isr32();
+extern void isr33();
 
