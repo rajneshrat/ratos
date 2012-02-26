@@ -15,8 +15,8 @@ int main(struct multiboot *mboot_ptr)
 	asm volatile ("int $0x2");
 	asm volatile("sti");
         int *pointer = (int *)imalloc(12);
-        *pointer = 2010232;
-        putint(*pointer);
+        *pointer = 201;
+//        putint(*pointer);
 //	clr();
 //	test();
 	puts("rajnesh\n");

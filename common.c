@@ -16,4 +16,15 @@ uint16 inw(uint16 port)
    uint16 ret;
    asm volatile ("inw %1, %0" : "=a" (ret) : "dN" (port));
    return ret;
-} 
+}
+
+void memset(uint32 *dest, int val, uint32 size)
+{
+   int i;
+   uint32 *poi = dest;
+   for(i=0;i<size;i++)
+   {
+      *poi = val;
+       poi++;
+   }
+}
