@@ -19,11 +19,42 @@ void isr_handler(registers_t *regs)
 	fun(regs);
 	return;
    }
-   puts("recieved interrupt: ");
+   puts("recieved unregistered interrupt: ");  // only for unregistered interrupts.
    putint(regs->int_no);
    putch('\n');
-   putint(0);
 }
+
+//function body taken from http://www.jamesmolloy.co.uk/tutorial_html/6.-Paging.html.
+static void page_fault(registers_t *regs)
+{
+   // A page fault has occurred.
+   // The faulting address is stored in the CR2 register.
+   uint32 faulting_address;
+   asm volatile("mov %%cr2, %0" : "=r" (faulting_address));
+
+   // The error code gives us details of what happened.
+   int present   = !(regs->err_code & 0x1); // Page not present
+   int rw = regs->err_code & 0x2;           // Write operation?
+   int us = regs->err_code & 0x4;           // Processor was in user-mode?
+   int reserved = regs->err_code & 0x8;     // Overwritten CPU-reserved bits of page entry?
+   int id = regs->err_code & 0x10;          // Caused by an instruction fetch?
+
+   // Output an error message.
+  // puts("Page fault! ( ");
+   puts("Page fault! ( ");
+   if (present) {puts("present ");}
+   if (rw) {puts("read-only ");}
+   if (us) {puts("user-mode ");}
+   if (reserved) {puts("reserved ");}
+   puts(") at 0x");
+    puthex(faulting_address);
+    putch('\n');
+ //   putint(faulting_address);
+//   putint(faulting_address);
+   puts("\n");
+   while(1);
+//   PANIC("Page fault");
+} 
 
 static void pittimer( registers_t *r)
 {
@@ -70,5 +101,6 @@ void initializeisr()
 {
         attachirqhandler(&pittimer, 32);
         attachirqhandler(&keyboardisr, 33);
+        attachirqhandler(&page_fault, 14);
 }
  

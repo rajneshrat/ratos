@@ -12,12 +12,13 @@ typedef struct vpage
 
 typedef struct vpagetable
 {
-	vpage_t *pages[1024];
+	vpage_t pages[1024];
 }vpagetable_t;
 
 typedef struct pagedir
 {
 	vpagetable_t *tables[1024];
+        uint32 physical[1024];
 }vpagedir_t;	
 
 vpagedir_t *working_page_directory;

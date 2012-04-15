@@ -5,7 +5,9 @@ static uint32 screeny = 0;
 #define SCREENWIDTH 80
 void putch(char ch)
 {
-	if(ch == 10 )
+	if( screeny >= 300 )
+        	screeny = 0;
+        if(ch == 10 )
 	{
 		screenx = 0;
 		screeny++;
@@ -63,15 +65,47 @@ int reverseint(int num)
 	
 void putint(int num)
 {
-	if( num == 0 )
+	int i = 0,j;
+        char arr[30];
+        if( num == 0 )
 	{
 		putch('0');
 	}
-	int i;
-	num = reverseint(num);
 	while( num )
 	{
-		putch((num%10)+48);
-		num= num/10;
+		arr[i] = num%10 + 48;
+                i++;
+                num = num/10;
+        }
+        for(j=i-1;j>=0;j--) 
+        {
+                putch(arr[j]);
 	}
-}		
+}
+
+void puthex(uint32 num)
+{
+   int a, i = 0, j;
+   char str[32];
+   char ch;
+   while(num)
+   {
+       a = num%16;
+       if(a>=10)
+       {
+           ch = 'a' + a-10;
+           str[i] = ch;
+       }
+       else
+       {
+           ch = '0' + a ;
+           str[i] = ch;
+       } 
+       num = num/16;
+       i++;
+   }
+   for(j=0;j<i;j++)
+   {
+      putch(str[i-j-1]);
+   }
+}

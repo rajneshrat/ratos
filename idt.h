@@ -22,6 +22,7 @@ extern void isr0();
 extern void isr1();
 extern void isr2();
 extern void isr8();
+extern void isr14();
 extern void isr32();
 extern void isr33();
 

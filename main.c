@@ -1,6 +1,7 @@
 #include "screen.h"
 #include "idt.h"
 #include "iheap.h"
+#include "vm.h"
 //#include "gdt.h"
 
 int main(struct multiboot *mboot_ptr)
@@ -10,13 +11,19 @@ int main(struct multiboot *mboot_ptr)
 //	initializegdt();
 	putch('\n');
 	initializeidt();
-	asm volatile ("int $0x1");
-	asm volatile ("int $0x0");
+        InitializePaging();
+////	asm volatile ("int $0x1");
+//	asm volatile ("int $0x0");
 	asm volatile ("int $0x2");
-	asm volatile("sti");
-        int *pointer = (int *)imalloc(12);
+//	asm volatile("sti");
+      //  while(1)
+        {
+           int  *pointer = (int *)imalloc(12);
+  //      }
+ //       int *pointer = (uint32 *) 0xABCDDD000;
         *pointer = 201;
-//        putint(*pointer);
+        putint(*pointer);
+        }
 //	clr();
 //	test();
 	puts("rajnesh\n");
