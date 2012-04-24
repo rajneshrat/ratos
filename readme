@@ -12,3 +12,14 @@ I competed the keyboard driver and pit today.
 i just wrote the handler for both these and rest was already there.
 right now I have written a common handler for isr and normal software interrupts, divide by zero, etc.
 Next time I will do virtual memory implementation.
+
+
+
+date 17/4/12
+Working on grub for starting OS.
+site - 
+http://aseemsethi.wordpress.com/article/creating-a-floppy-image-in-linux-29fizhrip655z-19/
+
+
+
+
