@@ -3,7 +3,7 @@
 #include "screen.h"
 #include "keyboard.h"
 
-irq_handler irq_array[32];
+irq_handler irq_array[252];
 
 void attachirqhandler(irq_handler fun, int irq_number)
 {
@@ -13,7 +13,8 @@ void attachirqhandler(irq_handler fun, int irq_number)
 // This gets called from our ASM interrupt handler stub.
 void isr_handler(registers_t *regs)
 {
-   if( irq_array[regs->int_no] )
+//   puts("in interrupt\n");
+   if(irq_array[regs->int_no] )
    {
    	irq_handler fun = irq_array[regs->int_no];
 	fun(regs);
@@ -58,10 +59,15 @@ static void page_fault(registers_t *regs)
 
 static void pittimer( registers_t *r)
 {
-  //      puts("in timer function\n");
+//        puts("in timer function\n");
         outb(0x20, 0x20);
 }
 
+static void doublefault( registers_t *r)
+{
+        puts("in double fault function\n");
+        outb(0x20, 0x20);
+}
 //function body taken as it is from http://www.osdever.net/bkerndev/Docs/keyboard.htm
 
 static void keyboardisr( registers_t *r)
@@ -100,7 +106,8 @@ static void keyboardisr( registers_t *r)
 void initializeisr()
 {
         attachirqhandler(&pittimer, 32);
+        attachirqhandler(&doublefault, 8);
         attachirqhandler(&keyboardisr, 33);
-        attachirqhandler(&page_fault, 14);
+//        attachirqhandler(&page_fault, 14);
 }
  

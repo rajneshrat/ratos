@@ -1,3 +1,6 @@
+
+
+
 In the last crash everything get wiped out...
 redoing from interrupt.
 just going through net foundthis good article for virtual memory 
@@ -20,6 +23,10 @@ Working on grub for starting OS.
 site - 
 http://aseemsethi.wordpress.com/article/creating-a-floppy-image-in-linux-29fizhrip655z-19/
 
-
-
+date 13/5/12
+changing the code for virtual memory, trying to make changes as requirement.
+In paging bit map is used to mark used and free frame. This is for current directory used, when this directory is replaced care must be taken to change these bits map. However these are only used by kerrnel to reallocate new frame and will have no as such effect but it may cause uneven usage of physical memory.
+All directory structure should be page aligned.`
+I am not using alloc or free frame in kernel directory as there is just 1 to 1 mapping in it, moreover there is no need to delete any frame in kernel. In later stage if there will be need of allocating or freeing I will write at that time.
+ 
 

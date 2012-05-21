@@ -4,7 +4,7 @@ extern int end;
 extern uint32 placement_address;// = (uint32)&end;
 static int TOTAL_PHYSICAL_MEMORY = 0x10000000;     //512 MB
 unsigned char Frames[0x10000];
-int GetFreePage(int *index, int *bitpos)
+int GetFreePage(int *index, int *bitpos)  //get the index and bit pos of first free frame. 
 {
    int MaximumIndex = TOTAL_PHYSICAL_MEMORY/0x1000;
    int i = 0, j;
@@ -29,7 +29,7 @@ int GetFreePage(int *index, int *bitpos)
    return 0; 
 }
 
-void SetFrame(int index, int bitpos)
+void SetFrame(int index, int bitpos)  // set the bit pos of that frame to mark it as used.
 {
    int n = 1;
    int i;
@@ -40,7 +40,7 @@ void SetFrame(int index, int bitpos)
    Frames[index] = Frames[index] | n;
 }
  
-void InitializePaging()
+void InitializePaging() //malloc the space for page directory and initializing it as 1 to 1 mappping.
 {
    vpagedir_t *kernel_directory = (vpagedir_t *)imalloc(sizeof(vpagedir_t));
    memset(kernel_directory, 0, sizeof(vpagedir_t));
