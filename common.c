@@ -18,6 +18,12 @@ uint16 inw(uint16 port)
    return ret;
 }
 
+void buzywait(uint32 time)
+{
+   int i;
+   for(i=0;i<10000000*time;i++)
+   ;
+}
 void memset(uint32 *dest, int val, uint32 size)
 {
    int i;

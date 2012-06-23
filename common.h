@@ -5,7 +5,9 @@ typedef short int16;
 typedef unsigned char uint8;
 typedef char int8;
 
+#define NULL (void *)0
 void outb(uint16 port, uint8 value);
+void buzywait(uint32 time);
 uint16 inw(uint16 port);
 uint8 inb(uint16 port);
 void memset(uint32 *dest, int val, uint32 len);

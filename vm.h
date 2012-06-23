@@ -24,5 +24,6 @@ typedef struct pagedir
 vpagedir_t *working_page_directory;
 
 void InitializePaging();
+void AllocFrame(uint32 address, vpagedir_t *dir); 
 
 void changePagedir(vpagedir_t *dir);

@@ -1,24 +1,122 @@
 #include "common.h"
+#include "screen.h"
+int CurrentDebugLevel = 0;
 uint16 *video = (uint16 *) 0xB8000;
 static uint32 screenx = 0;
 static uint32 screeny = 0;
 #define SCREENWIDTH 80
-void putch(char ch)
+#define SCREENLENGTH 25
+#define CursorBlinkFrequency 5
+
+void BlinkCursor()
 {
-	if( screeny >= 300 )
-        	screeny = 0;
-        if(ch == 10 )
+	static uint32 counter = 0;
+	if( counter == CursorBlinkFrequency)
+		DeleteCursor();
+	if( counter >= 2*CursorBlinkFrequency)
 	{
-		screenx = 0;
-		screeny++;
-		return;
-	}	
+		ShowCursor();
+		counter = 0;
+	}
+	counter ++;
+}
+
+void SetCurrentDebugLevel(int newlevel)
+{
+	CurrentDebugLevel = newlevel;
+}
+
+
+void scroll(int len)
+{
+   int i,j;
+	int screenpos = 0;
+	uint16 screenvalue = 0;
+	uint8 background = 0;
+	uint8 foreground = 7;
+	for(i=0;i<SCREENLENGTH - len;i++){
+		for(j=0;j<SCREENWIDTH;j++){
+	       video[screenpos] = video[screenpos + len*SCREENWIDTH];
+			 screenpos++;
+		}
+	}
+	for(i=SCREENLENGTH -len;i<SCREENLENGTH;i++){
+		for(j=0;j<SCREENWIDTH;j++){
+			screenvalue = background<<12;
+			screenvalue = screenvalue | foreground<<8;
+			screenvalue = screenvalue | 32;
+	      video[screenpos] = screenvalue;
+			screenpos++;
+		}
+	}
+	screenx = 0;
+	screeny = SCREENLENGTH - len;
+}
+
+
+void ShowCursor()
+{
 	int screenpos = screenx + screeny*SCREENWIDTH;
 	uint16 screenvalue = 0;
 	uint8 background = 0;
 	uint8 foreground = 7;
 	screenvalue = background<<12;
 	screenvalue = screenvalue | foreground<<8;
+	screenvalue = screenvalue | '_';
+	video[screenpos] = screenvalue;//ch | attribute;//screenvalue;
+}
+
+void DeleteCursor()
+{
+	int screenpos = screenx + screeny*SCREENWIDTH;
+	uint16 screenvalue = 0;
+	uint8 background = 0;
+	uint8 foreground = 7;
+	screenvalue = background<<12;
+	screenvalue = screenvalue | foreground<<8;
+	screenvalue = screenvalue | 32;
+	video[screenpos] = screenvalue;//ch | attribute;//screenvalue;
+}
+	
+void putch(char ch)
+{
+	if( screeny == SCREENLENGTH )
+        	scroll(1);
+	int screenpos = screenx + screeny*SCREENWIDTH;
+	uint16 screenvalue = 0;
+	uint8 background = 0;
+	uint8 foreground = 7;
+	screenvalue = background<<12;
+	screenvalue = screenvalue | foreground<<8;
+   if(ch == 40 )
+	{
+	   screenvalue = screenvalue | 32;
+	   video[screenpos] = screenvalue;//ch | attribute;//screenvalue;
+		screenx = 0;
+		screeny++;
+		return;
+	}	
+   if(ch == 8 )
+	{
+	   screenvalue = screenvalue | 32;
+	   video[screenpos] = screenvalue;//ch | attribute;//screenvalue;
+		if( screenx > 1)
+			screenx--;
+		else
+		{
+		   screeny--;
+		   screenx = SCREENWIDTH;
+		}
+		return;
+	}	
+   if(ch == 10 )
+	{
+	   screenvalue = screenvalue | 32;
+	   video[screenpos] = screenvalue;//ch | attribute;//screenvalue;
+		screenx = 0;
+		screeny++;
+		return;
+	}	
 	screenvalue = screenvalue | ch;
 	video[screenpos] = screenvalue;//ch | attribute;//screenvalue;
 	screenx++;
@@ -33,8 +131,8 @@ void clr()
 	int i,j;
 	screenx = 0;
 	screeny = 0;
-	for(i=0;i<40;i++){
-		for(j=0;j<80;j++){
+	for(i=0;i<SCREENLENGTH;i++){
+		for(j=0;j<SCREENWIDTH;j++){
 			putch(32);
 		}
 	}
@@ -108,4 +206,12 @@ void puthex(uint32 num)
    {
       putch(str[i-j-1]);
    }
+}
+
+int printk(int level, char * message)
+{
+	if( level >= CurrentDebugLevel )
+	{
+		puts(message);
+	}
 }

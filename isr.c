@@ -2,7 +2,8 @@
 #include "isr.h"
 #include "screen.h"
 #include "keyboard.h"
-
+#include "vm.h"
+#include "timer.h"
 irq_handler irq_array[252];
 
 void attachirqhandler(irq_handler fun, int irq_number)
@@ -43,24 +44,28 @@ static void page_fault(registers_t *regs)
    // Output an error message.
   // puts("Page fault! ( ");
    puts("Page fault! ( ");
-   if (present) {puts("present ");}
+   if (present) {puts("page not present ");}
    if (rw) {puts("read-only ");}
    if (us) {puts("user-mode ");}
    if (reserved) {puts("reserved ");}
    puts(") at 0x");
+    
     puthex(faulting_address);
     putch('\n');
  //   putint(faulting_address);
 //   putint(faulting_address);
    puts("\n");
-   while(1);
+   AllocFrame(faulting_address, NULL);
+        outb(0x20, 0x20);
+//   while(1);
 //   PANIC("Page fault");
 } 
 
 static void pittimer( registers_t *r)
 {
 //        puts("in timer function\n");
-        outb(0x20, 0x20);
+        DoTimer();
+		  outb(0x20, 0x20);
 }
 
 static void doublefault( registers_t *r)
@@ -108,6 +113,6 @@ void initializeisr()
         attachirqhandler(&pittimer, 32);
         attachirqhandler(&doublefault, 8);
         attachirqhandler(&keyboardisr, 33);
-//        attachirqhandler(&page_fault, 14);
+        attachirqhandler(&page_fault, 14);
 }
  
