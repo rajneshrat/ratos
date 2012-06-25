@@ -62,7 +62,8 @@ int FreeFrame(uint32 frame)  // given the frame addres , will set its position a
 // written for the malloc implementation. Earlier it was the part of AllocFrame. as in malloc we create the page table from imalloc however for malloc implemetation we need to freeze placement pointer and start the vm.
 vpage_t *GetPage(uint32 address, vpagedir_t *dir)  // just create the pagetable but still need to get frame.
 {
-   if(dir == NULL )
+   vpage_t *returnaddress = NULL;
+	if(dir == NULL )
       dir = working_page_directory;
     address = address / 0x1000;
    uint32 tableindex = address / 1024;
@@ -76,7 +77,7 @@ vpage_t *GetPage(uint32 address, vpagedir_t *dir)  // just create the pagetable 
 //   puts("\n");
    if( NULL !=  dir->tables[tableindex] )
    {
-      return &(dir->tables[tableindex]->pages[pageindex]);  // tableios already allocated nothingto do;
+      returnaddress = &(dir->tables[tableindex]->pages[pageindex]);  // tableios already allocated nothingto do;
    }
    else
    {
@@ -85,8 +86,13 @@ vpage_t *GetPage(uint32 address, vpagedir_t *dir)  // just create the pagetable 
       memset(ptable, 0, sizeof(vpagetable_t));
       dir->tables[tableindex] = ptable;
       dir->physical[tableindex] = (vpagedir_t *)((uint32) ptable | 0x7);
-      return &(ptable->pages[pageindex]);
+      returnaddress = &(ptable->pages[pageindex]);
    }
+   vpage_t *page = (vpage_t*) returnaddress;
+   page->present = 0;
+   page->rw = 0;
+   page->user = 0;
+	return returnaddress;
 }
 
 // given the address allocate the frame to it. Called at pagefault
@@ -142,7 +148,7 @@ void InitializePaging() //malloc the space for page directory and initializing i
       x = x + 0x1000;
    }
    int i;
-   KMallocStartingAddress = placement_address + 0x1000;
+   KMallocStartingAddress = placement_address + 0x3000;
    for(i=KMallocStartingAddress; i<KMallocSize; i = i + 0x1000)
    {
        // putint(i);

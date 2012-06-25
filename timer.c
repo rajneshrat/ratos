@@ -4,6 +4,10 @@
 void DoTimer()
 {
 
+//	static uint32 count = 0;
+//	putint(count);
+//	puts("\n");
+//   count++;
 	BlinkCursor();
 	
 }

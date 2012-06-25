@@ -58,8 +58,8 @@ void ShowCursor()
 {
 	int screenpos = screenx + screeny*SCREENWIDTH;
 	uint16 screenvalue = 0;
-	uint8 background = 0;
-	uint8 foreground = 7;
+	uint8 background = 2;
+	uint8 foreground = 9;
 	screenvalue = background<<12;
 	screenvalue = screenvalue | foreground<<8;
 	screenvalue = screenvalue | '_';
