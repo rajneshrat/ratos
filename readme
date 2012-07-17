@@ -51,3 +51,9 @@ The first two fields contain the start and end addresses of the boot module itse
 
 
 
+
+17/7/2012
+
+changed the main function to use multiboot.Most of the changes for main were as given in grub manual.
+
+right now i have initrd support but it does not do anything other the loading and printing garbage values. I willuse it later if needed.
