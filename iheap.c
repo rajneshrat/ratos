@@ -1,3 +1,6 @@
+
+//   linked list is used as the base for heap, whenever a malloc request comes, I just break the hole and give one part from it to malloc request.
+
 #include "iheap.h"
 #include "debug.h"
 extern uint32 end;
@@ -73,6 +76,7 @@ uint32 kmalloc( uint32 size )
     return returnaddress;
 }
 
+//just looping through all to find the address to free and then just increasing the size of holes next to it.
 void kfree(uint32 address)
 {
 	struct holes *ptr = head;

@@ -29,4 +29,25 @@ In paging bit map is used to mark used and free frame. This is for current direc
 All directory structure should be page aligned.`
 I am not using alloc or free frame in kernel directory as there is just 1 to 1 mapping in it, moreover there is no need to delete any frame in kernel. In later stage if there will be need of allocating or freeing I will write at that time.
  
+date 7/7/12
+
+initrd file is loaded with kernel of which the grub will give the loaction, it may be read later from the kernel with the address given by grub to main function.
+
+// data taken from http://www.gnu.org/software/grub/manual/multiboot/multiboot.html#Motivation for initrd.
+
+If bit 3 of the ‘flags’ is set, then the ‘mods’ fields indicate to the kernel what boot modules were loaded along with the kernel image, and where they can be found. ‘mods_count’ contains the number of modules loaded; ‘mods_addr’ contains the physical address of the first module structure. ‘mods_count’ may be zero, indicating no boot modules were loaded, even if bit 1 of ‘flags’ is set. Each module structure is formatted as follows:
+
+             +-------------------+
+     0       | mod_start         |
+     4       | mod_end           |
+             +-------------------+
+     8       | string            |
+             +-------------------+
+     12      | reserved (0)      |
+             +-------------------+
+
+The first two fields contain the start and end addresses of the boot module itself. The ‘string’ field provides an arbitrary string to be associated with that particular boot module; it is a zero-terminated ASCII string, just like the kernel command line. The ‘string’ field may be 0 if there is no string associated with the module. Typically the string might be a command line (e.g. if the operating system treats boot modules as executable programs), or a pathname (e.g. if the operating system treats boot modules as files in a file system), but its exact use is specific to the operating system. The ‘reserved’ field must be set to 0 by the boot loader and ignored by the operating system. 
+
+
+
 
