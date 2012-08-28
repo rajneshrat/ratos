@@ -6,3 +6,4 @@ void puts(char *);
 void putint(int i);
 void printhex(int i);
 void BlinkCursor();
+void printf (const char *format, ...);

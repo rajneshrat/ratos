@@ -11,4 +11,6 @@ void buzywait(uint32 time);
 uint16 inw(uint16 port);
 uint8 inb(uint16 port);
 void memset(uint32 *dest, int val, uint32 len);
+void outl(uint32 v, uint16 port);
+uint32 inl(uint16 port);
 

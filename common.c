@@ -1,4 +1,5 @@
 #include "common.h"
+
 void outb(uint16 port, uint8 value)
 {
 	asm volatile("outb %1, %0" : : "dN" (port), "a" (value));
@@ -9,6 +10,19 @@ uint8 inb(uint16 port)
    uint8 ret;
    asm volatile("inb %1, %0" : "=a" (ret) : "dN" (port));
    return ret;
+}
+
+
+void outl(uint32 val, uint16 port)
+{
+   asm volatile("outl %0,%1" : : "a" (val), "dN" (port));
+}
+
+uint32 inl(uint16  port)
+{
+   uint32 val;
+   asm volatile("inl %1,%0" : "=a" (val) : "dN" (port));
+   return val;
 }
 
 uint16 inw(uint16 port)

@@ -1,4 +1,4 @@
-SOURCES=timer.o boot.o vm.o main.o screen.o common.o sample.o idt.o isr.o interrupt.o iheap.o debug.o
+SOURCES=pci2.o network.o pci.o timer.o boot.o vm.o main.o screen.o common.o sample.o idt.o isr.o interrupt.o iheap.o debug.o
 CFLAGS=-nostdlib -o0 -nostdinc -fno-builtin -fno-stack-protector
 LDFLAGS=-Tlink.ld
 ASFLAGS=-felf
