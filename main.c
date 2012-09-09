@@ -22,6 +22,7 @@
      #include "vm.h"
      #include "pci.h" 
      #include "pci2.h" 
+     #include "debug.h"
      /* Macros. */
      
      /* Check if the bit BIT in FLAGS is set. */
@@ -59,11 +60,19 @@
        multiboot_info_t *mbi;
      
        /* Clear the screen. */
-       cls ();
-		 initializeidt();
-       InitializePaging();
-		// pci_scan();
-       StrobePciDevices();
+       //cls ();
+		// int a = 204800000;
+		 //asm volatile("mov %0, %%esp" : : "r" (a));
+	   // asm volatile("cli");
+		 //initializegdt();
+       initializeidt();
+		 searchbiossignature();
+		// InitializePaging();
+		 
+       //StrobePciDevices();
+	    asm volatile("sti");
+      // pci_scan();
+      // StrobePciDevices();
 		 //DetectNetworkDevices();
      
        return ;

@@ -68,10 +68,17 @@ static void pittimer( registers_t *r)
 		  outb(0x20, 0x20);
 }
 
+static void int13( registers_t *r)
+{
+//        puts("in timer function\n");
+	     printf("Someone caused General Protection Fault\n");
+		  outb(0x20, 0x20);
+}
 static void doublefault( registers_t *r)
 {
         puts("in double fault function\n");
         outb(0x20, 0x20);
+		  DoCoreDump();
 }
 //function body taken as it is from http://www.osdever.net/bkerndev/Docs/keyboard.htm
 
@@ -114,5 +121,6 @@ void initializeisr()
         attachirqhandler(&doublefault, 8);
         attachirqhandler(&keyboardisr, 33);
         attachirqhandler(&page_fault, 14);
+        attachirqhandler(&int13, 13);
 }
  

@@ -12,37 +12,6 @@ struct PciTable
 	struct PciTable *next;
 };
 
-static uint16  PciReadConfigWord( uint8  bus, uint8  dev, uint8  func, uint16  reg )
-{   
-    uint16    _cx     = 0;
-    uint8     devfunc = 0;
-
-    // Mask the input values
-    dev  &= PCI_DEV_MAX;
-    func &= PCI_FUNC_MAX;
-
-    // Make the conbined dev/func parameter
-    devfunc = dev;
-    devfunc <<= 3;
-    devfunc |= func;
-
-    // PCI BIOS v2.0c+ - READ CONFIGURATION WORD
-    // AX = B109h
-    // BL = device/function number (bits 7-3 device, bits 2-0 function)
-    // BH = bus number
-                        asm ("
-        mov    ax, PCI_BIOS_CFG_RD16
-        mov    bh, bus
-        mov    bl, devfunc
-        mov    di, reg
-        int    0x1A
-        mov    pciLastError, ah
-        mov    _cx, cx"
-    );
-
-    return  _cx;
-}
-
 typedef struct PciTable * PciDevices;
 
 static PciDevices head;
