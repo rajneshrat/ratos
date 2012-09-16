@@ -1,0 +1,7 @@
+#include "biosservice.h"
+
+bool DetectPciBiosService()
+{
+
+
+}	

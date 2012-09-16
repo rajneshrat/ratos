@@ -8,6 +8,6 @@ void DoTimer()
 //	putint(count);
 //	puts("\n");
 //   count++;
-    BlinkCursor();
-
+	BlinkCursor();
+	
 }
