@@ -57,3 +57,14 @@ The first two fields contain the start and end addresses of the boot module itse
 changed the main function to use multiboot.Most of the changes for main were as given in grub manual.
 
 right now i have initrd support but it does not do anything other the loading and printing garbage values. I willuse it later if needed.
+
+
+16/sep/12
+
+added pcibios support -
+most of the comments for this are there in the coreesponding files.
+with today's checkin I can read pci device registers, this is needed for implementing network drivers.
+
+Bios provide many services pcibios is one of them - 
+to use it first I have to get the starting address of the bios directory, then have to make lcall to get the starting address of other services, it has certain format, the manual from intel is checked-in for help in manual folder.
+
