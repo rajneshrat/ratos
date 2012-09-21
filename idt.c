@@ -25,6 +25,7 @@ void initializeidt()
     fillidttable((uint32)isr2, 16, 0x8e);
     fillidttable((uint32)isr8, 8, 0x8e);
     fillidttable((uint32)isr14, 14, 0x8e);
+//    fillidttable((uint32)isr43, 43, 0x8e);
     fillidttable((uint32)isr13, 13, 0x8e);
     fillidttable((uint32)isr32, 32, 0x8e);
     fillidttable((uint32)isr33, 33, 0x8e);

@@ -5,6 +5,11 @@ void outb(uint16 port, uint8 value)
     asm volatile("outb %1, %0" : : "dN" (port), "a" (value));
 }
 
+void outw(uint16 port, uint16 val)
+{
+    asm __volatile__ ("outw %%ax, %%dx" : : "d" (port), "a" (val));
+}
+
 uint8 inb(uint16 port)
 {
     uint8 ret;

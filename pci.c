@@ -132,21 +132,21 @@ void StrobePciDevices()
             uint32 ret = inl(0xCFC);
             if( (ret & 0xffff) != 0xFFFF )
             {
-       /*        // PciDevices temp = kmalloc(sizeof(struct PciTable));
+                PciDevices temp = imalloc(sizeof(struct PciTable));
                 temp->VendorId = ret & 0xffff;
                 temp->DeviceId = ret >> 16 & 0xffff;
                 temp->next = NULL;
-              //  if( head == NULL )
+                if( head == NULL )
                 {
-                //    head = temp;
+                    head = temp;
                 }
-              //  else
+                else
                 {
-                  //  last->next = temp;
+                    last->next = temp;
                 }
                 last = temp;
-             */
-                //printf("Detected Device with BusNumber = %d and DeviceNumber %d\n",i,j);
+             
+                printf("Detected Device with BusNumber = %d and DeviceNumber %d\n",i,j);
                 printf("Detected Pci Device ");
                 printf("Vendor ID = 0x%x ", ret & 0xffff);
                 printf("Device ID = 0x%x \n", ret >> 16 & 0xffff);

@@ -1,0 +1,1 @@
+qemu -net nic,model=rtl8139,vlan=1,macaddr=52:54:00:12:34:56
