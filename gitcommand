@@ -35,3 +35,7 @@ When you're done:
   Continue
 
 
+to pull the source to local
+git clone git@github.com:rajneshrat/ratos.git
+
+
