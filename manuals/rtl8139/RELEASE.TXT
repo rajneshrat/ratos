@@ -1,0 +1,23 @@
+################################################################################
+
+  Title:        Programming guide and sample code for RTL8139 family
+
+################################################################################
+
+
+  Name:          PGuide.01
+
+  Version:       V.01
+
+  Released By:   Sean
+
+  Release Date:  1999.01.10
+
+  Changed File:
+
+  Reason:        New release version.
+
+  Comment:       Make sure there is one and only one 8139 card installed on
+                 your computer.
+
+################################################################################

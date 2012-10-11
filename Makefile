@@ -12,5 +12,7 @@ clean:
 link:
 	ld $(LDFLAGS) -o kernel $(SOURCES)
 
+.c.o:	gcc $(CFLAGS) -c $<
+
 .s.o:
 	nasm $(ASFLAGS) $<
