@@ -68,6 +68,7 @@ with today's checkin I can read pci device registers, this is needed for impleme
 Bios provide many services pcibios is one of them - 
 to use it first I have to get the starting address of the bios directory, then have to make lcall to get the starting address of other services, it has certain format, the manual from intel is checked-in for help in manual folder.
 
+
 networking guide
 http://beej.us/guide/bgnet/
 

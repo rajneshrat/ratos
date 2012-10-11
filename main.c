@@ -26,7 +26,7 @@ int main(struct multiboot *mboot_ptr)
     // pci_scan();
     // StrobePciDevices();
     DetectNetworkDevices();
-    asm volatile("sti");
+//    asm volatile("sti");
     
 	putch('\n');
 //	asm volatile ("int $0x10");

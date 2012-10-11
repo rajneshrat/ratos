@@ -4,6 +4,10 @@ Global setup:
   git config --global user.name "Your Name"
   git config --global user.email rajneshraturi25@gmail.com
 Add your public key
+
+  ssh-keygen -t rsa -C "rajneshraturi25@gmail.com"
+
+copy key from ~/.ssh/id_rsa.pub
       
 
 Next steps:

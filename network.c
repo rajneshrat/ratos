@@ -23,7 +23,7 @@ void TestReceive()
 {
 	outb( BaseAddress + CONFIG1_REGISTER, 0x00);
 	outb( BaseAddress + COMMANDREGISTER, 0x10);
-    outl( BaseAddress +  0x30, (unsigned long)rx_buffer); 
+    	outl( BaseAddress +  0x30, (unsigned long)rx_buffer); 
 	outl(BaseAddress + 0x44, 0xf | (1 << 7));
 	outb(BaseAddress + 0x37, 0x0C);
 	outw(BaseAddress + 0x3C, 0x0005);
@@ -53,11 +53,11 @@ void DetectRTL8139()
     {
         printf(" Detected RTL8139 Network Driver\n");
 	    BaseAddress = ReadConfigurationDword(0, 3, 0x10);
-		BaseAddress = BaseAddress -1; // there is some bug need to decrease base by 1
+		BaseAddress = BaseAddress & 0xfffffff8 ;
 		GetMacAddress();
 		GetInterruptPin();
-//		TestReceive();
-//		CheckBuffer();
+		TestReceive();
+		CheckBuffer();
     }
 }
 
