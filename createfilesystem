@@ -1,0 +1,7 @@
+(1) dd if=/dev/zero of=output.img bs=1M count=4096 //create 4G empty file
+(2) mkfs -t ext4 output.img
+(3) mount -o loop output.img /mnt/mount_point
+(4) debootstrap sid /mnt/mount_point http://ftp.us.debian.org/debian/
+(5) chroot /mnt/mount_point
+(6) passwd root
+(7) umount /mnt/mount_point 
