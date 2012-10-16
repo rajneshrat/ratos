@@ -23,6 +23,7 @@ void isr_handler(registers_t *regs)
     }
     puts("recieved unregistered interrupt: ");  // only for unregistered interrupts.
     putint(regs->int_no);
+//    while(1);
     putch('\n');
 }
 
@@ -76,12 +77,17 @@ static void pittimer( registers_t *r)
     outb(0x20, 0x20);
 }
 
-static void GenProtectionFault( registers_t *r)
+static void GenProtectionFault( registers_t *reg)
 {
 //        puts("in timer function\n");
     printf("Interrupt 13 raised by cpu; Someone caused General Protection Fault\n");
+    printf("Error Code =%d\n", reg->err_code); 
+    printf("Error Flag =%d\n", reg->eflags); 
+ //  outb(0x20, 0x20);
     outb(0x20, 0x20);
+
 }
+
 static void doublefault( registers_t *r)
 {
     puts("Interrupt 8 raised by cpu, double fault function\n");

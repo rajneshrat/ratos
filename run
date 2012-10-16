@@ -1,6 +1,10 @@
 #!/bin/sh
 make &&
 ./update_image.sh &&
-sudo qemu -net tap,ifname=tap0,script=no -net nic,model=rtl8139,vlan=0,macaddr=5c:ac:4c:56:46:ab -fda floppy.img
+#sudo qemu -net tap,ifname=tap0,script=no -net nic,model=rtl8139,vlan=0,macaddr=5c:ac:4c:56:46:ab -fda floppy.img
+sh ifdown.sh
+sh ifup.sh
+qemu -m 512 -fda floppy.img -net nic,model=rtl8139,macaddr=5c:ac:45:44:43:ab -net tap,ifname=tap0,script=no
 #sudo qemu -net nic,model=rtl8139,vlan=0,macaddr=5c:ac:4c:56:46:ac -fda floppy.img
 #sudo qemu -net nic,model=rtl8139,vlan=0,macaddr=ff:ff:ff:ff:ff:ff -fda floppy.img
+sh ifdown.sh

@@ -11,25 +11,26 @@ int main(struct multiboot *mboot_ptr)
 	int i, j;
 	char ch = 'a';
 //	initializegdt();
-    clr ();
+//    clr ();
     // int a = 204800000;
     //asm volatile("mov %0, %%esp" : : "r" (a));
-    // asm volatile("cli");
-    initializegdt();
+     asm volatile("cli");
+//    initializegdt();
     initializeidt();
+    asm volatile("sti");
+	int a = 12;
+//	a = a/0;
     DetectBios32Service();
     DetectPciBiosService();
    // InitializePaging();
 
     StrobePciDevices();
-    //asm volatile("sti");
-    // pci_scan();
     // StrobePciDevices();
     DetectNetworkDevices();
 //    asm volatile("sti");
     
-	putch('\n');
-//	asm volatile ("int $0x10");
+//	putch('\n');
+//	asm volatile ("int $0xb");
 //	asm volatile ("int $0x0");
 //	asm volatile ("int $0x2");
 //	asm volatile("sti");
@@ -51,5 +52,5 @@ int main(struct multiboot *mboot_ptr)
 //	test();
 //	puts("rajnesh\n");
 //	putint(12323);
-	return 0xDEADBABA;
+	return 0;//0xDEADBABA;
 }
