@@ -65,15 +65,30 @@ static uint32 BaseAddress=0x0;
 #define IMR     0x3c
 #define R39_INTERRUPT_MASK      0x7f
 unsigned long   RxBufferPhysicalAddress;
+#define PCI_INTERRUPT_PIN    0x3d  
 
 void GetInterruptPin()
 {
 	uint32 InterruptReg  = ReadConfigurationDword(0, 3, 0x3c);
 	uint8 InterruptPin = (InterruptReg > 8)&0xff;
 	uint8 InterruptLine = (InterruptReg)&0xff;
-	printf("Interrupt Details %x %x imp = %x\n",InterruptReg, InterruptPin, InterruptLine);
+	printf("Interrupt Details %x interrupt pin %x interrupt line %x\n",InterruptReg, InterruptPin, InterruptLine);
 }
 
+/*
+void NewTestReceive()
+{
+    outb(BaseAddress + CR, CR_RE | CR_TE);       //enable Tx/Rx
+    outw(BaseAddress + IMR, 0x1 |  0x8000 | 0x4000 | R39_INTERRUPT_MASK);//enable interrupt
+    int rx_mode = 0x08 | 0x04 | 0x02 | 0x01;
+	uint32 tmp = rx_mode;
+      //  if (cp->rx_config != tmp) {
+          outl(BaseAddress + RCR, tmp);
+        //ratchanges    cp->rx_config = tmp;
+        //}    
+    
+}
+*/
 
 void TestReceive()
 {
@@ -82,17 +97,18 @@ void TestReceive()
     //  printf("Before wait\n");
 //	buzywait(100);
   //    printf("After wait\n");
-	 // Check that the chip has finished the reset
+
+/*	 // Check that the chip has finished the reset
   int i;
 	for (i = 1000; i > 0; i--) {
 	printf("Waiting\n");
     if ((inb(BaseAddress + 0x37) & 0x10) == 0) break;
   }
 	  outb(BaseAddress + CR, CR_RE | CR_TE);       //enable Tx/Rx
-        outw(BaseAddress + TCR,    TCR_IFG0   |
-                                TCR_IFG1   |
-                                TCR_MXDMA2 |
-                                TCR_MXDMA1);
+//        outw(BaseAddress + TCR,    TCR_IFG0   |
+  //                              TCR_IFG1   |
+    //                            TCR_MXDMA2 |
+      //                          TCR_MXDMA1);
 
         outw(BaseAddress + RCR,    RCR_RBLEN0 |
                                 RCR_MXDMA2 |
@@ -103,9 +119,36 @@ void TestReceive()
 				RCR_AAP
 				);
         outw(BaseAddress + RBSTART , RxBufferPhysicalAddress);
-        outw(BaseAddress + IMR, 0x8000 | 0x4000 | R39_INTERRUPT_MASK);//enable interrupt
+        outw(BaseAddress + IMR, 0x8000 | 0x4000 | 0x08 | 0x04 | 0x02 | 0x01 | R39_INTERRUPT_MASK);//enable interrupt
 
+*/
+//start 
+  
+        uint32       IntrMask        = 0x3C;
+        uint32 RxOK            = (1 << 0);
+	uint32 RxOn            = (1 << 3);
+	uint32 TxOn            = (1 << 2);
+        uint32 Cmd             = 0x37;
+        uint32 RxConfig        = 0x44;	
+        outw(BaseAddress + IntrMask, RxOK);
+        outb(BaseAddress + Cmd, RxOn | TxOn);
+        uint32 tmp = 0x08 | 0x04 | 0x02 | 0x01;
+        outl (BaseAddress + RxConfig, tmp);
 
+/*  
+    RxBufferPhysicalAddress = imalloc(1000);
+    outb( (uint16) (BaseAddress + CR), 0x10);
+    while ( (inb( (uint16) (BaseAddress + CR)) & 0x10) != 0 ) {}
+    // Setup receive buffer location
+    outb( (uint16) (BaseAddress + CR), 1<<3 );
+    outl( (uint16) (BaseAddress + 0x30), (uint32) RxBufferPhysicalAddress );
+    // Buffer typ
+    outl( (uint16) (BaseAddress + 0x44), 0xF | (1<<7) );
+    // IRQ
+    outw( (uint16) (BaseAddress + 0x3C), 5);  // TOK + ROK
+    // Enable receive
+*/
+// end
 //	outb( BaseAddress + CONFIG1_REGISTER, 0x00);
 //	outb( BaseAddress + COMMANDREGISTER, 0x10);
 //    	outl( BaseAddress +  0x30, (unsigned long)rx_buffer); 
@@ -115,21 +158,34 @@ void TestReceive()
 
 }
 
+
 void CheckBuffer()
 {
 	int i;
+//	return 0;
 	while(1)
 	{
-		for(i=0;i<1000;i++)
+	     static uint32 last = 122;
+	     uint32 PciCommandReg = ReadConfigurationDword(0, 3, 0x04);
+	     if(PciCommandReg != last)
+		{
+				printf("Found something\n");
+		}
+//		buzywait(10);	
+		last = PciCommandReg;
+/*		for(i=0;i<1000;i++)
 		{
 			if(rx_buffer[i]!=0)
 			{
 				printf("Found something\n");
 			}
 		}	
-	}
+*/	}
 }	
+
 	
+#define  PCI_PM_CTRL_STATE_MASK 0x0003 
+
 void DetectRTL8139()
 {
     uint16 vendorid = 0x10ec;
@@ -140,16 +196,21 @@ void DetectRTL8139()
         printf(" Detected RTL8139 Network Driver\n");
 	    BaseAddress = ReadConfigurationDword(0, 3, 0x10);
 	     uint32 PciCommandReg = ReadConfigurationDword(0, 3, 0x04);
-	        
+		printf("Pci status and Command  Register %x\n", PciCommandReg);	
+	      //  uint32 state = PciCommandReg &  PCI_PM_CTRL_STATE_MASK;
+//		printf(" State = %x", state);
 	//	PciCommandReg = PciCommandReg & 0xffff;
-	//	PciCommandReg = 0x0103;
-	//        WriteConfigurationDword(0, 3, 0x04, 0x0103);	
+	//	PciCommandReg = 0x01103;
+	        //WriteConfigurationDword(0, 3, 0x04, 0x00080103);	
+	        WriteConfigurationWord(0, 3, 0x03, 0x0008);	
+	        PciCommandReg = ReadConfigurationDword(0, 3, 0x0);
 		printf("Pci Command Register %x\n", PciCommandReg);	
 		BaseAddress = BaseAddress & 0xfffffff8 ;
 		GetMacAddress();
 		GetInterruptPin();
 		TestReceive();
-	//	CheckBuffer();
+//		NewTestReceive();
+		CheckBuffer();
     }
 }
 

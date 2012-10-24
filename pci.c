@@ -156,6 +156,8 @@ void StrobePciDevices()
                 PrintClassCode(classCode);
 				uint8 subClassCode =  (RegNo8 >> 16 ) & 0xff;
 				printf(" : subtype = %s\n\n", subClassCodeString[classCode][subClassCode]);
+				uint32 RegNo4 = ReadConfigurationDword(i,j, 0x4);
+				printf(" register 4 status and command  = %x\n\n", RegNo4);
             }
         }
     }

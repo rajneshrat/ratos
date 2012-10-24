@@ -2,12 +2,13 @@
 #include "screen.h"
 #include "idt.h"
 #include "iheap.h"
-#include "vm.h"
+//#include "vm.h"
 #include "pci.h"
 #include "debug.h"
 #include "pcibiosservice.h"
 int main(struct multiboot *mboot_ptr)
 {
+      printf("Testing\n");
 	int i, j;
 	char ch = 'a';
 //	initializegdt();
@@ -30,7 +31,6 @@ int main(struct multiboot *mboot_ptr)
 //    asm volatile("sti");
     
 //	putch('\n');
-//	asm volatile ("int $0xb");
 //	asm volatile ("int $0x0");
 //	asm volatile ("int $0x2");
 //	asm volatile("sti");
