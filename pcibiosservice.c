@@ -128,10 +128,9 @@ uint32 ReadConfigurationDword(uint8 busNumber, uint8 deviceNumber, uint8 registe
         return 0;
 	}
 }
-
 uint8 WriteConfigurationByte(uint8 busNumber, uint8 deviceNumber, uint8 registerNumber, uint8 value)
 {
-	uint16 ReturnStatus;
+   uint16 ReturnStatus;
 	uint16 InputComb = PCI_FUNCTION_ID << 8;
 	InputComb |= WRITE_CONFIG_BYTE;
     uint16 BusAndReg = (busNumber << 8 | deviceNumber << 3 ) & 0xfff8; 
@@ -176,6 +175,7 @@ uint8 WriteConfigurationWord(uint8 busNumber, uint8 deviceNumber, uint8 register
         return 0;
 	}
 }
+
 
 uint8 WriteConfigurationDword(uint8 busNumber, uint8 deviceNumber, uint8 registerNumber, uint32 value)
 {

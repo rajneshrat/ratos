@@ -1,4 +1,4 @@
-SOURCES= pcibiosservice.o biosservice.o gdt.o gdtasm.o network.o pci.o timer.o boot.o vm.o main.o screen.o common.o sample.o idt.o isr.o interrupt.o iheap.o debug.o
+SOURCES= arp.o ethernet.o i825xx.o pcibiosservice.o biosservice.o gdt.o gdtasm.o rtl8139.o pci.o timer.o boot.o vm.o main.o screen.o common.o sample.o idt.o isr.o interrupt.o iheap.o debug.o
 CFLAGS=-nostdlib -nostdinc -fno-builtin  
 #-fno-stack-protector
 LDFLAGS=-Tlink.ld -melf_i386 -g -nostdlib -X  

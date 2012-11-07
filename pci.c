@@ -3,7 +3,7 @@
 #include "screen.h"
 #include "iheap.h"
 #include "pcibiosservice.h"
-
+#include "i825xx.h"
 #define PCI_DEV_MAX         0x1F        // Max. value for dev parameter
 #define PCI_FUNC_MAX        0x07        // Max. value for func parameter
 
@@ -128,7 +128,7 @@ void StrobePciDevices()
             uint32 ReadWord = 0;
             ReadWord = ReadWord | i << 16;
             ReadWord = ReadWord | j << 11 | ((uint32)0x80000000);
-            outl(ReadWord, 0xCF8);
+            outl(0xCF8, ReadWord);
             uint32 ret = inl(0xCFC);
             if( (ret & 0xffff) != 0xFFFF )
             {
@@ -146,19 +146,25 @@ void StrobePciDevices()
                 }
                 last = temp;
              
-                printf("Detected Device with BusNumber = %d and DeviceNumber %d\n",i,j);
-                printf("Detected Pci Device ");
+//                printf("Detected Device with BusNumber = %d and DeviceNumber %d\n",i,j);
+  //              printf("Detected Pci Device ");
                 printf("Vendor ID = 0x%x ", ret & 0xffff);
                 printf("Device ID = 0x%x \n", ret >> 16 & 0xffff);
+					 uint32 vendorId = ret & 0xffff;
+					 uint32 deviceId = ret >> 16 & 0xffff;
 				uint32 RegNo8 = ReadConfigurationDword(i,j, 0x8);
 				uint8 classCode = RegNo8 >> 24;
 				printf("device type = ");
                 PrintClassCode(classCode);
 				uint8 subClassCode =  (RegNo8 >> 16 ) & 0xff;
-				printf(" : subtype = %s\n\n", subClassCodeString[classCode][subClassCode]);
+				printf(" : subtype = %s device = %d\n", subClassCodeString[classCode][subClassCode], j);
 				uint32 RegNo4 = ReadConfigurationDword(i,j, 0x4);
-				printf(" register 4 status and command  = %x\n\n", RegNo4);
+            if( vendorId == 0x8086 && (deviceId == 0x100e || deviceId == 0x1209))
+            {
+					initialize825x(i,j);
+//				printf(" register 4 status and command  = %x\n\n", RegNo4);
             }
+     			}
         }
     }
 }
@@ -169,13 +175,13 @@ uint32 PciStrobeRegister(uint32 BusNumber, uint32 DeviceNumber, uint32 Register)
     ReadWord = ReadWord | BusNumber << 16;
     ReadWord = ReadWord | DeviceNumber << 11 | ((uint32)0x80000000);
     ReadWord = Register << 2 | ReadWord;
-    outl(ReadWord, 0xCF8);
+    outl(0xCF8, ReadWord);
 }
 uint32 PciReadRegister(uint32 BusNumber, uint32 DeviceNumber, uint32 Register)
 {
     uint32 ReadWord = 0;
     ReadWord = BusNumber << 16 | Register <<2 | DeviceNumber << 11 | ((uint32)0x80000000);
-    outl(ReadWord, 0xCF8);
+    outl(0xCF8, ReadWord);
     uint32 ret = inl(0xCFC);
     return ret;
 }

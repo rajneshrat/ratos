@@ -15,10 +15,14 @@ void attachirqhandler(irq_handler fun, int irq_number)
 void isr_handler(registers_t *regs)
 {
 //   puts("in interrupt\n");
+    if( regs->int_no == 43 )
+	    printf("Detected receive \n\n");
     if(irq_array[regs->int_no] )
     {
         irq_handler fun = irq_array[regs->int_no];
         fun(regs);
+        outb(0xa0, 0x20); // for pic1
+        outb(0x20, 0x20);  // for pic 
         return;
     }
     puts("recieved unregistered interrupt: ");  // only for unregistered interrupts.
@@ -65,7 +69,7 @@ static void page_fault(registers_t *regs)
 //   putint(faulting_address);
     puts("\n");
     AllocFrame(faulting_address, NULL);
-    outb(0x20, 0x20);
+//    outb(0x20, 0x20);
 //   while(1);
 //   PANIC("Page fault");
 }
@@ -74,24 +78,27 @@ static void pittimer( registers_t *r)
 {
 //        puts("in timer function\n");
     DoTimer();
-    outb(0x20, 0x20);
+//    outb(0x20, 0x20);
 }
 
 static void GenProtectionFault( registers_t *reg)
 {
 //        puts("in timer function\n");
     printf("Interrupt 13 raised by cpu; Someone caused General Protection Fault\n");
-    printf("Error Code =%d\n", reg->err_code); 
-    printf("Error Flag =%d\n", reg->eflags); 
- //  outb(0x20, 0x20);
-    outb(0x20, 0x20);
+    printf("Error Code =0x%x\n", reg->err_code); 
+    printf("Error Flag = 0x%x\n", reg->eflags);
+	 if( 0x15b == reg->err_code ){
+		printf("Reason May be an unhandled interrupt\n"); 
+    }
+   //  outb(0x20, 0x20);
+//    outb(0x20, 0x20);
 
 }
 
 static void doublefault( registers_t *r)
 {
     puts("Interrupt 8 raised by cpu, double fault function\n");
-    outb(0x20, 0x20);
+//    outb(0x20, 0x20);
     DoCoreDump();
 }
 //function body taken as it is from http://www.osdever.net/bkerndev/Docs/keyboard.htm
@@ -126,8 +133,9 @@ static void keyboardisr( registers_t *r)
         *  you would add 128 to the scancode when you look for it */
         putch(kbdus[scancode]);
     }
-    outb(0x20, 0x20);
+//    outb(0x20, 0x20);
 }
+
 
 void initializeisr()
 {

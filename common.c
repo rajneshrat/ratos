@@ -18,7 +18,7 @@ uint8 inb(uint16 port)
 }
 
 
-void outl(uint32 val, uint16 port)
+void outl(uint16 port, uint32 val)
 {
     asm volatile("outl %0,%1" : : "a" (val), "dN" (port));
 }
