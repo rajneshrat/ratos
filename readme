@@ -74,3 +74,10 @@ http://beej.us/guide/bgnet/
 
 linux brwose
 http://lxr.linux.no/#linux-old+v0.01/
+
+6/nov/2012
+
+I have added the functionality to receive packets. Right now I have written driver for rtl8139 and will stick to it.
+Till now I can receive packets but can not send. Working on transmitting part.
+
+
