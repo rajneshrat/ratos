@@ -145,31 +145,31 @@ void StrobePciDevices()
                     last->next = temp;
                 }
                 last = temp;
-             
+
 //                printf("Detected Device with BusNumber = %d and DeviceNumber %d\n",i,j);
-  //              printf("Detected Pci Device ");
+                //              printf("Detected Pci Device ");
                 printf("Vendor ID = 0x%x ", ret & 0xffff);
                 printf("Device ID = 0x%x \n", ret >> 16 & 0xffff);
-					 uint32 vendorId = ret & 0xffff;
-					 uint32 deviceId = ret >> 16 & 0xffff;
-				uint32 RegNo8 = ReadConfigurationDword(i,j, 0x8);
-				uint8 classCode = RegNo8 >> 24;
-				printf("device type = ");
+                uint32 vendorId = ret & 0xffff;
+                uint32 deviceId = ret >> 16 & 0xffff;
+                uint32 RegNo8 = ReadConfigurationDword(i,j, 0x8);
+                uint8 classCode = RegNo8 >> 24;
+                printf("device type = ");
                 PrintClassCode(classCode);
-				uint8 subClassCode =  (RegNo8 >> 16 ) & 0xff;
-				printf(" : subtype = %s device = %d\n", subClassCodeString[classCode][subClassCode], j);
-				uint32 RegNo4 = ReadConfigurationDword(i,j, 0x4);
-            if( vendorId == 0x8086 && (deviceId == 0x100e || deviceId == 0x1209))
-            {
-					initialize825x(i,j);
+                uint8 subClassCode =  (RegNo8 >> 16 ) & 0xff;
+                printf(" : subtype = %s device = %d\n", subClassCodeString[classCode][subClassCode], j);
+                uint32 RegNo4 = ReadConfigurationDword(i,j, 0x4);
+                if( vendorId == 0x8086 && (deviceId == 0x100e || deviceId == 0x1209))
+                {
+                    initialize825x(i,j);
 //				printf(" register 4 status and command  = %x\n\n", RegNo4);
-            }
-            if( vendorId == 0x10ec && (deviceId == 0x8139))
-            {
-					InitializeRtl8139(i,j);
+                }
+                if( vendorId == 0x10ec && (deviceId == 0x8139))
+                {
+                    InitializeRtl8139(i,j);
 //				printf(" register 4 status and command  = %x\n\n", RegNo4);
+                }
             }
-     			}
         }
     }
 }

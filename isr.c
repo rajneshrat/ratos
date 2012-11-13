@@ -19,7 +19,7 @@ void isr_handler(registers_t *regs)
         irq_handler fun = irq_array[regs->int_no];
         fun(regs);
         outb(0xa0, 0x20); // for pic1
-        outb(0x20, 0x20);  // for pic 
+        outb(0x20, 0x20);  // for pic
         return;
     }
     puts("recieved unregistered interrupt: ");  // only for unregistered interrupts.
@@ -82,12 +82,12 @@ static void GenProtectionFault( registers_t *reg)
 {
 //        puts("in timer function\n");
     printf("Interrupt 13 raised by cpu; Someone caused General Protection Fault\n");
-    printf("Error Code =0x%x\n", reg->err_code); 
+    printf("Error Code =0x%x\n", reg->err_code);
     printf("Error Flag = 0x%x\n", reg->eflags);
-	 if( 0x15b == reg->err_code ){
-		printf("Reason May be an unhandled interrupt\n"); 
+    if( 0x15b == reg->err_code ) {
+        printf("Reason May be an unhandled interrupt\n");
     }
-   //  outb(0x20, 0x20);
+    //  outb(0x20, 0x20);
 //    outb(0x20, 0x20);
 
 }

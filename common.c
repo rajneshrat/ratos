@@ -64,8 +64,26 @@ void memset(uint32 *dest, int val, uint32 size)
 
 void copy(unsigned char *dest, unsigned char *src, int len)
 {
-	int i;
-	for(i=0;i<len;i++){
-		dest[i] = src[i];
-	}
+    int i;
+    for(i=0; i<len; i++) {
+        dest[i] = src[i];
+    }
 }
+
+int strcmp(char *str1, char *str2)
+{
+    int i;
+    while(str1[i] != '\0' && str2[i] != '\0' && (str1[i] == str2[i])) {
+        i++;
+    }
+    if(str1[i] == '\0' && str2[i] == '\0') {
+        return 0;
+    }
+    if(str1[i] == '\0' && str2[i] != '\0') {
+        return -1;
+    }
+    if(str1[i] != '\0' && str2[i] == '\0') {
+        return 1;
+    }
+}
+

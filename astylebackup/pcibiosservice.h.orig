@@ -3,8 +3,8 @@
 #define KERNEL_CS 0x0
 
 static struct {
-    unsigned long address;
-    unsigned short segment;
+   unsigned long address;
+   unsigned short segment;
 } pci_indirect = { 0, KERNEL_CS };
 
 int DetectPciBiosService();

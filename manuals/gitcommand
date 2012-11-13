@@ -1,0 +1,45 @@
+Global setup:
+
+ Set up git
+  git config --global user.name "Your Name"
+  git config --global user.email rajneshraturi25@gmail.com
+Add your public key
+
+  ssh-keygen -t rsa -C "rajneshraturi25@gmail.com"
+
+copy key from ~/.ssh/id_rsa.pub
+      
+
+Next steps:
+
+  mkdir ratos
+  cd ratos
+  git init
+  touch README
+  git add README
+  git commit -m 'first commit'
+  git remote add origin git@github.com:rajneshrat/ratos.git
+  git push -u origin master
+      
+
+Existing Git Repo?
+
+  cd existing_git_repo
+  git remote add origin git@github.com:rajneshrat/ratos.git
+  git push -u origin master
+      
+
+Importing a Subversion Repo?
+
+  Click here
+      
+
+When you're done:
+
+  Continue
+
+
+to pull the source to local
+git clone git@github.com:rajneshrat/ratos.git
+
+

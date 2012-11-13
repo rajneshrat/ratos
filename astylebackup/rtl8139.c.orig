@@ -19,7 +19,7 @@
 //1 - Right now there is no ring buffer yet to be implemented. I am just resetting the current buffer pointer to start after receiving every packet.
 //2 - Doing everything in interrupt context. This will make system slow.
 
-unsigned char rxBuffer[1500];
+unsigned char rxBuffer[1500];  
 unsigned char TxBuffer[1300];
 
 static uint32 BaseAddress=0x0;
@@ -44,11 +44,11 @@ void Rtl8139Interrupt(registers_t *regs)
         ReceivePacketFromWire(rxBuffer);
     }
     if( interruptStatus & 0x04 ) {
-        //      printf("Transmitted a packet sussessfully\n");
+  //      printf("Transmitted a packet sussessfully\n"); 
     }
     outw((BaseAddress + PACKET_READ_ADDRESS), 0);
     outl((BaseAddress + RECEIVE_BUFFER_ADDRESS), (uint32)rxBuffer );
-    outw((BaseAddress + INT_MASK_REG), 0xe1ff); // TOK + ROK
+    outw((BaseAddress + INT_MASK_REG), 0xe1ff); // TOK + ROK 
     outl((BaseAddress + RECEIVE_CONFIG_REG), 0xa);//
 }
 

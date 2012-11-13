@@ -15,4 +15,4 @@ void outl(uint16 port, uint32 v);
 uint32 inl(uint16 port);
 void sleep(uint32 time);
 void copy(unsigned char *dest, unsigned char *src, int len);
-
+int strcmp(char *str1, char *str2);
