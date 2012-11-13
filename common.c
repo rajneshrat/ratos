@@ -43,6 +43,14 @@ void buzywait(uint32 time)
     for(i=0; i<10000000*time; i++)
         ;
 }
+
+void sleep(uint32 time)
+{
+    int i;
+    for(i=0; i<10000000*time; i++)
+        ;
+}
+
 void memset(uint32 *dest, int val, uint32 size)
 {
     int i;
@@ -52,4 +60,12 @@ void memset(uint32 *dest, int val, uint32 size)
         *poi = val;
         poi++;
     }
+}
+
+void copy(unsigned char *dest, unsigned char *src, int len)
+{
+	int i;
+	for(i=0;i<len;i++){
+		dest[i] = src[i];
+	}
 }

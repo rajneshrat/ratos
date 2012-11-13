@@ -164,6 +164,11 @@ void StrobePciDevices()
 					initialize825x(i,j);
 //				printf(" register 4 status and command  = %x\n\n", RegNo4);
             }
+            if( vendorId == 0x10ec && (deviceId == 0x8139))
+            {
+					InitializeRtl8139(i,j);
+//				printf(" register 4 status and command  = %x\n\n", RegNo4);
+            }
      			}
         }
     }

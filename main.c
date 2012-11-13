@@ -28,7 +28,7 @@ int main( )//struct multiboot *mboot_ptr)
 
     StrobePciDevices();
     // StrobePciDevices();
-    DetectNetworkDevices();
+// 	SendPacketOut(test);
 //	asm volatile ("int $0xb");
 while(1);    
 //	putch('\n');

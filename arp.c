@@ -1,5 +1,7 @@
 #include "arp.h"
 
+char HostHWAdd[6] = { 0x00,0xaa,0x00,0x60,0x21,0x01 }; 
+char HostIP[6] = {10,0,2,2};
 struct ArpPacket
 {
 	unsigned char HWType[2];
@@ -11,10 +13,10 @@ struct ArpPacket
 	unsigned char SenderProtocolAddress[4];
 	unsigned char TargetHWAddress[6];
 	unsigned char TargetProtocolAddress[4];
+	unsigned char Extra[20];
 };
 
 typedef struct ArpPacket ArpPacket_t;
-
 
 void DumpArpPacket(ArpPacket_t *data)
 {
@@ -72,12 +74,45 @@ void DumpArpPacket(ArpPacket_t *data)
 	for(i=0;i<data->ProtocolAddLength;i++){
 		printf("%d ",data->TargetProtocolAddress[i]);
 	}
+	printf("Extra \n");
+	for(i=0;i<20;i++){
+		printf("%x ",data->Extra[i]);
+	}
 	printf("\n");
 
 }
 
+void SendArpReply(unsigned char TargetHWAdd[6], char TargetIP[4])
+{
+	ArpPacket_t *packet = (ArpPacket_t *) imalloc(sizeof(ArpPacket_t));
+	packet->HWType[0] = 0;
+	packet->HWType[1] = 1;
+	packet->ProtocolType[0] = 0x08;
+	packet->ProtocolType[1] = 0x00;
+	packet->HWAddLength = 6;
+	packet->ProtocolAddLength = 4;
+	packet->Operation[0] = 0; //ARP Reply;
+	packet->Operation[1] = 2; //ARP Reply;
+	int i;
+	for(i=0;i<6;i++){
+		packet->SenderHWAddress[i] = HostHWAdd[i];
+	}
+	for(i=0;i<4;i++){
+		packet->SenderProtocolAddress[i] = HostIP[i];
+	}
+	for(i=0;i<6;i++){
+		packet->TargetHWAddress[i] = TargetHWAdd[i];
+	}
+	for(i=0;i<4;i++){
+		packet->TargetProtocolAddress[i] = TargetIP[i];
+	}
+	SendPacketToCard(TargetHWAdd, packet, 28, 0x0806);
+//	DumpArpPacket(packet);
+}
+ 
 void HandleArpPacket(char *data)
 {
 	ArpPacket_t *packet = ( ArpPacket_t *)data;
-	DumpArpPacket(data);
+//	DumpArpPacket(data);
+   SendArpReply(packet->SenderHWAddress, packet->SenderProtocolAddress);
 }

@@ -14,9 +14,6 @@ void attachirqhandler(irq_handler fun, int irq_number)
 // This gets called from our ASM interrupt handler stub.
 void isr_handler(registers_t *regs)
 {
-//   puts("in interrupt\n");
-    if( regs->int_no == 43 )
-	    printf("Detected receive \n\n");
     if(irq_array[regs->int_no] )
     {
         irq_handler fun = irq_array[regs->int_no];
