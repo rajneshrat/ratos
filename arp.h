@@ -2,13 +2,12 @@
 #define __ARP__
 #include "common.h"
 #include "screen.h"
-#define MapSize 100
 
-struct MapTable {
-    unsigned char key[MapSize][4];
-    unsigned char value[MapSize][6];
+struct ArpMapTable {
+    unsigned char key[4];
+    unsigned char value[6];
 };
-typedef struct MapTable MapTable_t;
+typedef struct ArpMapTable ArpMapTable_t;
 
 void HandleArpPacket(unsigned char *data);
 void GetMacAddressForIP(unsigned char *IP, unsigned char *mac);

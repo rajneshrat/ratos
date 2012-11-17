@@ -1,6 +1,7 @@
 #include "arp.h"
 
-MapTable_t HwIpMapTable;
+#define ArpMapSize 100
+ArpMapTable_t HwIpMapTable[ArpMapSize];
 uint32 CurrentHwIPMapSize = 0;
 
 char HostHWAdd[6] = { 0x00,0xaa,0x00,0x60,0x21,0x01 };
@@ -17,7 +18,7 @@ struct ArpPacket
     unsigned char SenderProtocolAddress[4];
     unsigned char TargetHWAddress[6];
     unsigned char TargetProtocolAddress[4];
-    unsigned char Extra[20];
+//    unsigned char Extra[20];
 };
 
 typedef struct ArpPacket ArpPacket_t;
@@ -89,17 +90,17 @@ void DumpArpPacket(ArpPacket_t *data)
     for(i=0; i<data->ProtocolAddLength; i++) {
         printf("%d ",data->TargetProtocolAddress[i]);
     }
-    printf("Extra \n");
-    for(i=0; i<20; i++) {
-        printf("%x ",data->Extra[i]);
-    }
+//    printf("Extra \n");
+//    for(i=0; i<20; i++) {
+//        printf("%x ",data->Extra[i]);
+//    }
     printf("\n");
 }
 
 void FillHwIpMapTable(unsigned char *ip, unsigned char *mac)
 {
-    copy(HwIpMapTable.key[CurrentHwIPMapSize], ip, 4);
-    copy(HwIpMapTable.value[CurrentHwIPMapSize], mac, 6);
+    copy(HwIpMapTable[CurrentHwIPMapSize].key, ip, 4);
+    copy(HwIpMapTable[CurrentHwIPMapSize].value, mac, 6);
     if( CurrentHwIPMapSize <= 100 ) {
         CurrentHwIPMapSize++;
     }
@@ -109,8 +110,8 @@ int CheckHwIpMapTable(unsigned char *IP, unsigned char *mac)
 {
     int i;
     for(i=0; i<CurrentHwIPMapSize; i++) {
-        if(!strcmp(HwIpMapTable.key[i],IP)) {
-            copy(mac, HwIpMapTable.value[i], 6);
+        if(!strcmp(HwIpMapTable[i].key,IP)) {
+            copy(mac, HwIpMapTable[i].value, 6);
             return 1;
         }
     }
@@ -176,7 +177,7 @@ void SendArpReply(unsigned char TargetHWAdd[6], char TargetIP[4])
     for(i=0; i<4; i++) {
         packet->TargetProtocolAddress[i] = TargetIP[i];
     }
-    SendPacketToCard(TargetHWAdd, packet, 28, 0x0806);
+    SendPacketToCard(TargetHWAdd, packet, sizeof(ArpPacket_t), 0x0806);
 //	DumpArpPacket(packet);
 }
 

@@ -29,7 +29,7 @@ int main( )//struct multiboot *mboot_ptr)
     StrobePciDevices();
     unsigned char IP[4] = {10,0,2,21};
     unsigned char *MAC = imalloc(6);
-//	GetMacAddressForIP(IP,MAC);
+	GetMacAddressForIP(IP,MAC);
     printf("Mac in main = \n");
     for(i=0; i<6; i++) {
         printf("%x ",MAC[i]);

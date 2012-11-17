@@ -47,12 +47,16 @@ void HandleIcmpPacket(unsigned char *data, unsigned char *srcIP, unsigned char *
     packet->code = 0;
     packet->checksum[0] = 0;
     packet->checksum[1] = 0;
-    uint16 checksum = CalculateChecksum(data, 64);
-    packet->checksum[0] = checksum >> 8;
-    packet->checksum[1] = checksum & 0xff;
-//    SendPingReply(dstIP, srcIP);
-//	SendIpv4Packet(packet, 10, 0x1, dstIP, srcIP);
+    uint16 checksum = CalculateChecksum(data, 32);
+	int i;
+	for(i=0;i<50;i++){
+		packet->data[i] = 0;
+	}
+  //  packet->checksum[0] = checksum >> 8;
+  //  packet->checksum[1] = checksum & 0xff;
 //	DumpIcmpPacket(packet);
+    SendPingReply(dstIP, srcIP);
+//	SendIpv4Packet(packet, 10, 0x1, dstIP, srcIP);
 }
 
 void SendPingReply(unsigned char *srcIP, unsigned char *dstIP)
@@ -64,6 +68,6 @@ void SendPingReply(unsigned char *srcIP, unsigned char *dstIP)
     for(i=0; i<4; i++) {
         printf("%d ", dstIP[i]);
     }
-    SendIpv4Packet(packet, 10, 1, srcIP, dstIP);
+    SendIpv4Packet(packet, 64, 1, srcIP, dstIP);
 }
 

@@ -44,5 +44,5 @@ void SendPacketToCard(char dstHwAdd[6], unsigned char *rawData, uint32 length, u
     packet->Type[0] = type >> 8 & 0xff;
     packet->Type[1] = type & 0xff;
     copy(packet->Data, rawData, length);
-    SendPacketOut(&packet->DstMac[0], length+sizeof(EthernetPacket_t) - 6 - 100 ); // there is no premble while sending
+    SendPacketOut(&packet->DstMac[0], length+sizeof(EthernetPacket_t) - 4 - sizeof(packet->Data) ); // there is no premble while sending
 }
