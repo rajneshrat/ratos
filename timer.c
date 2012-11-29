@@ -9,5 +9,6 @@ void DoTimer()
 //	puts("\n");
 //   count++;
     BlinkCursor();
+    AddTicks(1);
 
 }

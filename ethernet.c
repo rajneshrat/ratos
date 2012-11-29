@@ -19,15 +19,15 @@ void ReceivePacketFromWire(char *rawData)
     uint16 Type = Packet->Type[0] << 8 | Packet->Type[1];
     switch (Type) {
     case 0x0800:
-        printf("Detected IPv4 Packet\n");
+        AddKernelMesg("Detected IPv4 Packet\n");
         HandleIpv4Packet(Packet->Data);
         break;
     case 0x0806:
-        printf("Arp Packet\n");
+        AddKernelMesg("Arp Packet\n");
         HandleArpPacket(Packet->Data);
         break;
     default :
-        printf("Unknown Ethernet Packet\n");
+        AddKernelMesg("Unknown Ethernet Packet\n");
     }
 }
 

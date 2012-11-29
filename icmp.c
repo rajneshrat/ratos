@@ -13,12 +13,12 @@ typedef struct IcmpPacket IcmpPacket_t;
 
 void DumpIcmpPacket(IcmpPacket_t *packet)
 {
-    printf("Dumping Icmp Packet\n");
-    printf("Type = %x\n", packet->type);
-    printf("Code = %x\n", packet->code);
+    printk("Dumping Icmp Packet\n");
+    printk("Type = %x\n", packet->type);
+    printk("Code = %x\n", packet->code);
     int i;
     for(i=0; i<4; i++) {
-        printf("%x", packet->data[i]);
+        printk("%x", packet->data[i]);
     }
 }
 
@@ -39,6 +39,17 @@ uint16 CalculateChecksum(unsigned char *data, int len)
     return ~sum;
 }
 
+void HandlePingReply(IcmpPacket_t *packet, char *srcIP)
+{
+	printf("Received ping reply from ");
+	printf("%d",srcIP[0]);
+	int i;
+	for(i=1;i<4;i++){
+		printf(".%d",srcIP[i]);
+	}
+	printf("\n");
+}
+		
 void HandleIcmpPacket(unsigned char *data, unsigned char *srcIP, unsigned char *dstIP)
 {
     IcmpPacket_t *packet = (IcmpPacket_t *) data;
@@ -55,8 +66,14 @@ void HandleIcmpPacket(unsigned char *data, unsigned char *srcIP, unsigned char *
   //  packet->checksum[0] = checksum >> 8;
   //  packet->checksum[1] = checksum & 0xff;
 //	DumpIcmpPacket(packet);
-    SendPingReply(dstIP, srcIP);
-//	SendIpv4Packet(packet, 10, 0x1, dstIP, srcIP);
+    switch( packet->type){
+		case 0: HandlePingReply(packet, srcIP);
+			break;
+		case 8: SendPingReply(dstIP, srcIP);
+			break;
+	}
+//	
+  SendIpv4Packet(packet, 10, 0x1, dstIP, srcIP);
 }
 
 void SendPingReply(unsigned char *srcIP, unsigned char *dstIP)
@@ -64,10 +81,22 @@ void SendPingReply(unsigned char *srcIP, unsigned char *dstIP)
     IcmpPacket_t *packet = imalloc(sizeof(IcmpPacket_t));
     packet->type = 0;
     packet->code = 0;
-    int i;
-    for(i=0; i<4; i++) {
-        printf("%d ", dstIP[i]);
-    }
     SendIpv4Packet(packet, 64, 1, srcIP, dstIP);
 }
 
+void SendPingRequest(unsigned char *srcIP, unsigned char *dstIP)
+{
+    IcmpPacket_t *packet = imalloc(sizeof(IcmpPacket_t));
+    packet->type = 8;
+    packet->code = 0;
+    packet->checksum[0] = 0;
+    packet->checksum[1] = 0;
+    int i;
+    for(i=0; i<4; i++) {
+        printk("%d ", dstIP[i]);
+    }
+    uint16 checksum = CalculateChecksum(packet, 32);
+    packet->checksum[0] = checksum >> 8;
+    packet->checksum[1] = checksum & 0xff;
+    SendIpv4Packet(packet, 64, 1, srcIP, dstIP);
+}

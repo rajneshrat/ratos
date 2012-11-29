@@ -7,27 +7,20 @@
 #include "pci.h"
 #include "debug.h"
 #include "pcibiosservice.h"
-int main( )//struct multiboot *mboot_ptr)
+int main()//struct multiboot *mboot_ptr)
 {
-    printf("Testing\n");
-    int i, j;
-    char ch = 'a';
-//	initializegdt();
-//    clr ();
-    // int a = 204800000;
-    //asm volatile("mov %0, %%esp" : : "r" (a));
+    clr ();
+    clr ();
     asm volatile("cli");
     initializegdt();
     initializeidt();
     asm volatile("sti");
-    int a = 12;
-//	a = a/0;
-//   InitializePaging();
+//    InitializePaging();
     DetectBios32Service();
     DetectPciBiosService();
-
     StrobePciDevices();
-    unsigned char IP[4] = {10,0,2,21};
+
+/*    unsigned char IP[4] = {10,0,2,21};
     unsigned char *MAC = imalloc(6);
 	GetMacAddressForIP(IP,MAC);
     printf("Mac in main = \n");
@@ -42,9 +35,10 @@ int main( )//struct multiboot *mboot_ptr)
         printf("%x ",mac[i]);
     }
     printf("\n");
-    // StrobePciDevices();
+*/    // StrobePciDevices();
 // 	SendPacketOut(test);
 //	asm volatile ("int $0xb");
+    ShowShell();
     while(1);
 //	putch('\n');
 //	asm volatile ("int $0x0");

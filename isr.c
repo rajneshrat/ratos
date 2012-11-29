@@ -129,6 +129,7 @@ static void keyboardisr( registers_t *r)
         *  held. If shift is held using the larger lookup table,
         *  you would add 128 to the scancode when you look for it */
         putch(kbdus[scancode]);
+        DoShellProcess(kbdus[scancode]);
     }
 //    outb(0x20, 0x20);
 }

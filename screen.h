@@ -1,4 +1,4 @@
-int printk(int level, char *message);
+//int printk(int level, char *message);
 void SetCurrentDebugLevel(int newlevel);
 void putch(char ch);
 void clr();

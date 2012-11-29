@@ -57,7 +57,7 @@ void GetInterruptPin()
     uint32 InterruptReg  = ReadConfigurationDword(0, 3, INT_MASK_REG);
     uint8 InterruptPin = (InterruptReg > 8)&0xff;
     uint8 InterruptLine = (InterruptReg)&0xff;
-    printf("Interrupt Details %x interrupt pin %x interrupt line %x\n",InterruptReg, InterruptPin, InterruptLine);
+    printk("Interrupt Details %x interrupt pin %x interrupt line %x\n",InterruptReg, InterruptPin, InterruptLine);
     attachirqhandler(Rtl8139Interrupt, InterruptLine + 32);	 // I have done remapping so have to add 32.
 }
 
@@ -83,7 +83,7 @@ void ResetCard()
     //reset
     outb( (uint16) (BaseAddress + COMMANDREGISTER), 0x10);
     while ( (inb( (uint16) (BaseAddress + COMMANDREGISTER)) & 0x10) != 0 ) {
-        printf("Waiting for resetting rtl8139 card\n");
+        printk("Waiting for resetting rtl8139 card\n");
         sleep(2);
     }
     outw((BaseAddress + INT_STATUS_REG), 0xe1ff);
@@ -105,12 +105,12 @@ void InitializeRtl8139(uint8 busNumber, uint8 deviceNumber)
     WriteConfigurationDword(busNumber, deviceNumber,0x10,BaseAddress);
     if( (BaseAddress & 0x1) == 1)
     {
-        printf("Detected I/O type \n");
+        printk("Detected I/O type \n");
         BaseAddress = BaseAddress & 0xfffffffc ;
     }
     else
     {
-        printf("Detected unknown mapped type will do dump\n");
+        printk("Detected unknown mapped type will do dump\n");
         return;
     }
     GetMacAddress();
@@ -122,12 +122,12 @@ void GetMacAddress()
 {
     unsigned int i;
     uint8 Mac;
-    printf("Card Mac Address = ");
+    printk("Card Mac Address = ");
     for(i=0; i<6; i++)
     {
         Mac = inb(BaseAddress + i);
         CardHwAdd[i] = Mac;
-        printf("%x ",Mac);
+        printk("%x ",Mac);
     }
-    printf("\n");
+    printk("\n");
 }

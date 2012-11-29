@@ -68,7 +68,6 @@ vpage_t *GetPage(uint32 address, vpagedir_t *dir)  // just create the pagetable 
     address = address / 0x1000;
     uint32 tableindex = address / 1024;
     uint32 pageindex = address % 1024;
-//   printk(3, "Giving page for index ");
 //   putint(tableindex);
     // puts(" ");
 //   putint(pageindex);
@@ -81,7 +80,7 @@ vpage_t *GetPage(uint32 address, vpagedir_t *dir)  // just create the pagetable 
     }
     else
     {
-        printk(3, "creating new page table\n");
+        printk("creating new page table\n");
         vpagetable_t *ptable = (vpagetable_t *)imalloc(sizeof(vpage_t));
         memset(ptable, 0, sizeof(vpagetable_t));
         dir->tables[tableindex] = ptable;
@@ -99,7 +98,7 @@ vpage_t *GetPage(uint32 address, vpagedir_t *dir)  // just create the pagetable 
 void AllocFrame(uint32 address, vpagedir_t *dir)
 {
 
-    printk(2, "In AllocFrame\n");
+    printk("In AllocFrame\n");
     if( dir == NULL)
     {
         dir = working_page_directory;

@@ -208,7 +208,7 @@ void puthex(uint32 num)
     }
 }
 
-static void itoa (char *buf, int base, int d)
+void itoa (char *buf, int base, int d)
 {
     char *p = buf;
     char *p1, *p2;
@@ -249,7 +249,7 @@ static void itoa (char *buf, int base, int d)
         p2--;
     }
 }
-
+/*
 int printk(int level, char * message)
 {
     if( level >= CurrentDebugLevel )
@@ -257,7 +257,7 @@ int printk(int level, char * message)
         puts(message);
     }
 }
-
+*/
 void printf (const char *format, ...)
 {
     char **arg = (char **) &format;

@@ -70,9 +70,18 @@ void copy(unsigned char *dest, unsigned char *src, int len)
     }
 }
 
+int strlen(char *str)
+{
+	int i=0;
+	while(str[i]!='\0'){
+		i++;
+	}
+	return i;
+}
+
 int strcmp(char *str1, char *str2)
 {
-    int i;
+    int i=0;
     while(str1[i] != '\0' && str2[i] != '\0' && (str1[i] == str2[i])) {
         i++;
     }
@@ -87,3 +96,25 @@ int strcmp(char *str1, char *str2)
     }
 }
 
+int strncmp(char *str1, char *str2, int n)
+{
+    int i=0;
+    while(str1[i] != '\0' && str2[i] != '\0' && (str1[i] == str2[i]) && i < n) {
+        i++;
+    }
+    if(i==n) {
+        return 0;
+    }
+	return 1;
+}
+
+int atoi(char *str)
+{
+	int num=0;
+	int i=0;
+	while(str[i]!='\0'){
+		num=num*10+str[i]-48;
+		i++;
+	}
+	return num;
+}

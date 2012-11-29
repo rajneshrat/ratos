@@ -42,29 +42,29 @@ uint16 CalculateChecksum(unsigned char *data, int len)
 */
 void DumpIpv4Packet(Ipv4Packet_t *packet)
 {
-    printf("Version = %x\n", packet->version);
-    printf("Ihl = %x\n", packet->Ihl);
-    printf("Tos = %x\n", packet->ToS);
+    printk("Version = %x\n", packet->version);
+    printk("Ihl = %x\n", packet->Ihl);
+    printk("Tos = %x\n", packet->ToS);
     
-	printf("Length High= %d\n", packet->length[0]);
-	printf("Length Low= %d\n", packet->length[1]);
+	printk("Length High= %d\n", packet->length[0]);
+	printk("Length Low= %d\n", packet->length[1]);
     uint16 identy = packet->identification[0] << 8 | packet->identification[1];
-    printf("Identification = %x\n", identy);
-    printf("Flags = %x\n", packet->Flags);
+    printk("Identification = %x\n", identy);
+    printk("Flags = %x\n", packet->Flags);
     uint16 fragmentOffset = packet->FragmentOffestHigh << 5 | packet->FragmentOffestLow;
-    printf("FragmentationOffset Low = %x\n", packet->FragmentOffestLow);
-    printf("FragmentationOffset High = %x\n", packet->FragmentOffestHigh);
-    printf("FragmentationOffset = %x\n", fragmentOffset);
-    printf("Ttl = %x\n", packet->TTL);
-    printf("Protocol = %x\n", packet->Protocol);
+    printk("FragmentationOffset Low = %x\n", packet->FragmentOffestLow);
+    printk("FragmentationOffset High = %x\n", packet->FragmentOffestHigh);
+    printk("FragmentationOffset = %x\n", fragmentOffset);
+    printk("Ttl = %x\n", packet->TTL);
+    printk("Protocol = %x\n", packet->Protocol);
     int i;
-    printf("Src IP = ");
+    printk("Src IP = ");
     for(i=0; i<4; i++) {
-        printf("%d ",packet->SrcIP[i]);
+        printk("%d ",packet->SrcIP[i]);
     }
-    printf("Dst IP = ");
+    printk("Dst IP = ");
     for(i=0; i<4; i++) {
-        printf("%d ",packet->DstIP[i]);
+        printk("%d ",packet->DstIP[i]);
     }
 }
 
@@ -77,7 +77,7 @@ void HandleIpv4Packet(unsigned char *data)
 	DumpIpv4Packet(packet);
     switch(packet->Protocol) {
     case 1:
-        printf("This is a Icmp packet\n");
+        printk("This is a Icmp packet\n");
         // 	SendPacketToCard(TargetHWAdd, packet, 64 + sizeof(Ipv4Packet_t) - 100, 0x0800);
         HandleIcmpPacket(packet->data, packet->SrcIP, packet->DstIP);
         packet->identification[0] = 0x00; //  this is the identification field, yet to be implemented.
@@ -91,13 +91,13 @@ void HandleIpv4Packet(unsigned char *data)
         }
         break;
     case 2:
-        printf("This is a Igmp packet\n");
+        printk("This is a Igmp packet\n");
         break;
     case 6:
-        printf("This is a Tcp packet\n");
+        printk("This is a Tcp packet\n");
         break;
     case 17:
-        printf("This is a Udp packet\n");
+        printk("This is a Udp packet\n");
         break;
     }
 }

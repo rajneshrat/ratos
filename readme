@@ -80,4 +80,6 @@ http://lxr.linux.no/#linux-old+v0.01/
 I have added the functionality to receive packets. Right now I have written driver for rtl8139 and will stick to it.
 Till now I can receive packets but can not send. Working on transmitting part.
 
+17/non/2012
 
+Completed partial icmp feature. Now I can send arp and icmp(ping) packet. Will work on MP after this and will come back to it after giving a shell prompt.
