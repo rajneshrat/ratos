@@ -1,4 +1,0 @@
-#!/bin/sh 
-sudo /etc/qemu-ifup tap0
-qemu -m 256 -fda floppy.img -net nic -net tap,ifname=tap0,script=no
-sudo /etc/qemu-ifdown tap0

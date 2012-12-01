@@ -1,2 +1,0 @@
-interrupt 13 is called again and angain  -
-	some other interrupt is misbhaving may be called as no_error code instead of other.
