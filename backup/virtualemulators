@@ -1,0 +1,8 @@
+qemu
+qtemu - apt-get install ktqemu
+bochs - apt-get install bochs, apt-get install bochs-x
+parallel system
+kvm
+virtualbox
+vmware player
+

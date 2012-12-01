@@ -1,0 +1,27 @@
+for running the linux kernel in qemu
+
+
+took linux disk image from http://wiki.qemu.org/Testing
+
+mount this image and replace the kernel from boot to yours own
+
+install following 
+apt-get install uml-utilities bridge-utils
+
+qun the kernel using command - qemu -m 512 -hda linux-0.2.img -net nic -net tap,ifname=tap0,script=no
+
+for enabling networking in linux running in qemu 
+
+#qemu-ifup
+ifconfig eth0 down
+ifconfig eth0 0.0.0.0 promisc up
+openvpn --mktun --dev tap0
+ifconfig tap0 0.0.0.0 up
+brctl addbr br0
+brctl addif br0 eth0
+brctl addif br0 tap0
+brctl stp br0 off
+ifconfig br0 10.0.2.21 netmask 255.255.255.0
+
+
+ 

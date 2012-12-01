@@ -1,0 +1,33 @@
+This is the minimum os I am developing. 
+
+To compile this you just need gcc, nasm, make, and done.
+To test this you need qemu or can be tested on real hardware.
+
+To test on qemu do the following.
+  make
+  sh makefloppyimage.sh
+  sh run.sh
+
+To test on real hardware
+  make
+  sh makefloppyimage.sh
+  copy the floppy.img to floppy. < Working on implementing hard disk image >
+
+Right now it has following features-
+  Interrupt support.
+  Virtual Memory.
+  Pci Bus support.
+  Networking - Only to IPv4 and Icmp layer. Need to implement TCP. I have implemented only rtl8139 driver, so it will work with only that.
+
+What will you see.
+  Once you run this you will see a command prompt to fire very minimum commands. ping, clear, dmesg, etc.
+
+For any help or other mail at rajneshraturi25@gmail.com
+
+Present Status-
+  At present I am working on implementing multitasking. 
+
+Reference -
+  For os framework - http://www.jamesmolloy.co.uk/tutorial_html, wikipidia, http://wiki.osdev.org/Expanded_Main_Page, and many others. 
+      For more check manuals/oswebsite.
+  For networking - Wikipidia and manuals provided by rtl8139 and other interface card manufacturer.

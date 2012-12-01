@@ -1,0 +1,149 @@
+details about os software and hardware like vm , etc
+http://www.nondot.org/sabre/os/articles
+
+bran os  tells how to make os in c but need bootloader
+http://www.osdever.net/bkerndev/Docs/basickernel.htm
+
+
+for writing the boot loader  how to add c code loader does'nt work for me 
+http://code.google.com/p/kryos-dev/wiki/FirstStep
+
+base page of mikeos basic of nasm and dd
+http://mikeos.berlios.de/write-your-own-os.html
+
+tutorial for bootlader and few os tutorial
+http://www.joelgompert.com/OS/lesson4.htm
+
+qemu-system-arm
+http://balau82.wordpress.com/2010/04/12/booting-linux-with-u-boot-on-qemu-arm/
+
+bran last page
+http://www.osdever.net/bkerndev/Docs/whatsleft.htm
+
+x64 base operating system with source code
+http://www.returninfinity.com/baremetal.html
+
+complete os in assembly with separeate boot loader
+http://mikeos.berlios.de/
+
+very good site wiki os
+http://wiki.osdev.org/Main_Page
+
+how to use gnu grub loader without linux( bare )
+http://wiki.osdev.org/Bare_bones
+
+community for os building
+http://www.wikihow.com/Make-a-Computer-Operating-System
+
+how to make a fresh begin in os - good site
+http://www.osdever.net/tutorials/index
+
+good tutorial for printing paging multitasking in c
+http://www.jamesmolloy.co.uk/tutorial_html/index.html
+
+berkley tutorial
+http://academicearth.org/courses/operating-systems-and-system-programming
+
+links to useful os site -- do it if you want restart
+http://stackoverflow.com/questions/43180/how-to-get-started-in-operating-system-development
+
+pintos a complete os 
+http://www.scs.stanford.edu/07au-cs140/pintos/pintos.html
+
+
+good site realted to download of linux folder(first release of linux) in OSDOCS 
+http://kerneltrap.org/node/14002
+
+keyboard and many other in sequential order
+http://www.brokenthorn.com/Resources/OSDevIndex.html
+
+counter site for geek os
+http://www.cs.umd.edu/class/spring2008/cmsc412/
+
+
+very good site in memory management; all concepts
+http://www.osdever.net/tutorials/view/memory-management-1?the_id=44
+
+
+complete implementation of paging
+http://wiki.osdev.org/Setting_Up_Paging
+
+
+step by step development with framework given 
+http://www.brokenthorn.com/Resources/OSDevIndex.html
+
+pintos step by step development of the os with framework already provided
+http://www.scs.stanford.edu/07au-cs140/pintos/pintos.html
+
+stackoverflow site giving sites of other os development
+http://stackoverflow.com/questions/43180/how-to-get-started-in-operating-system-development
+
+roll your own os
+http://www.jamesmolloy.co.uk/tutorial_html/index.html
+
+
+a mini os with many imp features---
+https://github.com/stephenfewer/NoNameOS/tree/b1e5144b5bf79c8496474d13cfbf25fda3af33d2
+
+very very basicand only basic
+http://wiki.osdev.org/Category:Babystep
+
+os which need others help
+http://code.google.com/p/geekos/wiki/ProjectStatus
+
+tutorial pdf of some university look good
+http://www.cs.umd.edu/class/spring2008/cmsc412/
+
+grub manual for multiboot
+http://www.gnu.org/software/grub/manual/multiboot/multiboot.html
+
+berkley videos of os
+http://www.youtube.com/playlist?list=PL62A66DDD3B3CC0B7
+
+
+is dev tutorial with difficulty level
+http://wiki.osdev.org/Tutorials
+
+porting c library in my os
+http://wiki.osdev.org/Porting_Newlib
+
+
+intel manual for networking
+http://pdos.csail.mit.edu/6.828/2011/readings/hardware/8254x_GBe_SDM.pdf
+
+
+mit videos of the os
+http://pdos.csail.mit.edu/6.828/2011/schedule.html
+
+pci video
+http://www.youtube.com/watch?v=NTc9JQtnDKY
+
+links for other sites and ...
+http://www.osdever.net/tutorials.php?cat=0&sort=1
+
+faq about os good one --
+http://www.superfrink.net/athenaeum/OS-FAQ/
+
+<<<<<<< HEAD
+helpful in tcp/ip implementation
+http://www.pcvr.nl/tcpip/
+
+
+=======
+qemu base page containing disk image and other stuff
+http://wiki.qemu.org/Testing
+
+minimum kernel config file
+http://saurorja.org/2011/07/04/creating-a-minimal-kernel-development-setup-using-kvmqemu/
+>>>>>>> d02a620add8d2e81c0983c13d33adbff6a465d94
+
+good site of os with different modules
+http://www.nondot.org/sabre/os/articles/
+
+standard gnu kernel and linker script
+http://www.gnu.org/software/grub/manual/multiboot/html_node/kernel_002ec.html#kernel_002ec
+
+creating a minimal linux system
+http://users.cecs.anu.edu.au/~okeefe/p2b/buildMin/buildMin.html#toc4
+
+

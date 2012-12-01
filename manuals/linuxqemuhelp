@@ -1,0 +1,45 @@
+for running the linux kernel in qemu
+
+
+took linux disk image from http://wiki.qemu.org/Testing
+
+mount this image and replace the kernel in boot  dir to that of yours.
+
+
+for enabling networking in linux running in qemu 
+
+
+
+to build the minimum kernel use "make allnoconfig" and change the following parameters from .config file -
+
+these will prevent the kernel panic of unable to mount vfs
+CONFIG_IDE , CONFIG_BLK_DEV_IDE , and CONFIG_BLK_DEV_IDEDISK    for enabling hda
+CONFIG_EXT2_FS=y , CONFIG_EXT3_FS=y , CONFIG_EXT4_FS=y    for supporting ext fs support
+
+these will prevent the kernel panic of no init found 
+CONFIG_BINFMT_ELF=y
+
+to enable networking
+CONFIG_NET=y  CONFIG_LBDAF=y
+
+to enable pci support
+CONFIG_PCI 
+
+to add proc support
+CONFIG_PROC_KCORE  , CONFIG_IDE_PROC_FS , CONFIG_PROC_FS , CONFIG_PROC_SYSCTL , CONFIG_PROC_PAGE_MONITOR , CONFIG_SYSFS , CONFIG_BSD_PROCESS_ACCT   
+
+#qemu-ifup
+ifconfig eth0 down
+ifconfig eth0 0.0.0.0 promisc up
+openvpn --mktun --dev tap0
+ifconfig tap0 0.0.0.0 up
+brctl addbr br0
+brctl addif br0 eth0
+brctl addif br0 tap0
+brctl stp br0 off
+ifconfig br0 10.0.2.21 netmask 255.255.255.0
+
+run the kernel using command 
+	qemu -m 512 -hda bzImage -net nic -net tap,ifname=tap0,script=no
+
+ 
