@@ -3,7 +3,6 @@
 #include "screen.h"
 #include "iheap.h"
 #include "pcibiosservice.h"
-#include "i825xx.h"
 #define PCI_DEV_MAX         0x1F        // Max. value for dev parameter
 #define PCI_FUNC_MAX        0x07        // Max. value for func parameter
 
@@ -161,7 +160,6 @@ void StrobePciDevices()
                 uint32 RegNo4 = ReadConfigurationDword(i,j, 0x4);
                 if( vendorId == 0x8086 && (deviceId == 0x100e || deviceId == 0x1209))
                 {
-                    initialize825x(i,j);
 //				printf(" register 4 status and command  = %x\n\n", RegNo4);
                 }
                 if( vendorId == 0x10ec && (deviceId == 0x8139))
