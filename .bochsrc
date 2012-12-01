@@ -1,7 +1,10 @@
 megs: 32
-floppya: 1_44=/dev/loop0, status=inserted
+floppya: 1_44=floppy.img, status=inserted
 boot: a
 log: bochsout.txt
+ne2k: ioaddr=0x300, irq=11, mac=b0:c4:20:00:00:01, ethmod=linux, ethdev=eth0
+i440fxsupport: enabled=1, slot1=ne2k
+pnic: enabled=1, mac=b0:c4:20:00:00:02, ethmod=null, ethdev=tap0
 mouse: enabled=0
 clock: sync=realtime
 cpu: ips=500000 

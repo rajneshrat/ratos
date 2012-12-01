@@ -51,6 +51,10 @@ void DoShellProcess(char ch)
            //printk("%d%s%c%x",123,"apple",'c',20);
 			Dodmesg();
 		}
+		if(!strncmp(command, "clear", 5)){
+           //printk("%d%s%c%x",123,"apple",'c',20);
+			clr();
+		}
 		if(!strncmp(command, "ping", 4)){
 			char dstIP[8];
             GetDstFromStr(command, dstIP);

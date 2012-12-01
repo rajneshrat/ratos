@@ -11,8 +11,8 @@ static uint32 screeny = 0;
 void BlinkCursor()
 {
     static uint32 counter = 0;
-    if( counter == CursorBlinkFrequency)
-        DeleteCursor();
+ //   if( counter == CursorBlinkFrequency)
+//        DeleteCursor();
     if( counter >= 2*CursorBlinkFrequency)
     {
         ShowCursor();
