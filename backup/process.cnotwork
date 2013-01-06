@@ -1,0 +1,284 @@
+// process.c is mainly for tasks scheduling and fork management written for ratos.
+
+#include "process.h"
+#include "common.h"
+
+
+struct Process{
+	uint32 pid;
+	uint32 stackPointer;
+	uint32 stackStartingAddress;  // this we need to copy stack while doing fork.
+	uint32 iPointer;
+	uint32 basePointer;
+	struct Process *next;
+};
+
+typedef struct Process Tasks;
+
+Tasks ProcessQueue;
+Tasks *newTask;// = imalloc(sizeof(Tasks)+100);
+
+static uint32 newPid;
+
+static Tasks *currentTask = NULL;
+
+extern uint32 GetEIPofInterruptedTask();
+extern uint32 GetEIP();
+extern uint32 firstProcessStartingStack;
+void SaveTask(Tasks *task)
+{
+	task->iPointer = GetEIP();
+}
+
+static struct {
+    unsigned long address;
+    unsigned short segment;
+} direct ;
+
+void CopyStack(Tasks *srcTask, Tasks *dstTask)
+{
+	int sign = 4;
+	uint32 srcStack = (uint32 )srcTask->stackStartingAddress;
+	uint32 srcStackCurrent = (uint32 )srcTask->stackPointer;
+    asm (
+         "movl %%esp, %0;"
+         : "=r" (srcStackCurrent)
+         : 
+        );
+
+	uint32 dstStack = (uint32 )kmalloc(300);
+//problem is somewhere here
+    uint32 diff = dstStack - srcStack;
+	printf("\nThe srcstack = %u dststack = %u diff is %u\n", srcStack, dstStack, diff);
+	uint32 ebp;
+	asm volatile("mov %%ebp, %0" : "=r"(ebp) :);
+	dstTask->basePointer = ebp + diff;//srcTask->basePointer;// + diff;
+	if(srcStack > srcStackCurrent){
+		sign = -4;
+	}
+	printf("Will copt from %d to %d\n",srcStack,srcStackCurrent);
+	while(srcStack != srcStackCurrent){
+		if( 
+		(*(uint32 *)srcStack <= srcTask->stackStartingAddress && *(uint32 *)srcStack >= srcTask->stackPointer)
+	//		||
+	//		(*(uint32 *)srcStack > srcTask->stackStartingAddress && *(uint32 *)srcStack < srcTask->stackPointer) 
+			) {
+	//		*(uint32 *)dstStack = *(uint32 *)srcStack + diff;
+	//dstTask->basePointer = *dstStack;
+		}
+		else{
+			*(uint32 *)dstStack = *(uint32 *)srcStack ;
+	    }		
+		srcStack = srcStack + sign;
+		dstStack = dstStack + sign;
+	}
+	if( 
+		(*(uint32 *)srcStack <= srcTask->stackStartingAddress && *(uint32 *)srcStack >= srcTask->stackPointer)
+	){
+	 *(uint32 *)dstStack = *(uint32 *)srcStack ;//+ diff;
+	}
+	else{
+			*(uint32 *)dstStack = *(uint32 *)srcStack ;
+		
+		}
+	dstTask->stackPointer = dstStack;
+}
+
+void ScheduleTask(Tasks *task)
+{
+	int times=0;
+	asm volatile("cli");
+	asm volatile("sti");
+	printf("Scheduler Called\n");
+    printf("current task id = %d\n",currentTask->pid);
+	printf("next task id = %d\n",task->pid);
+	uint32 eip = task->iPointer;// GetEIP();
+	char *stackCurrent;
+	stackCurrent = task->stackPointer;
+	uint32 ebp; 
+	ebp = task->basePointer;
+//	times++;
+    sleep(5);
+//	if(times>=2){
+//	    asm volatile("sti");
+//		return ;
+//	}
+    direct.address = eip;
+    uint32 kernelcodesegment = 0;
+    asm ("movl %%cs, %0;"
+         : "=r" (kernelcodesegment)
+         :);
+    direct.segment = kernelcodesegment;
+	printf("Now will do jump from scheduler\n");
+/*    
+	asm volatile("sti");
+	asm( "jmp (%%edi)"
+         :
+         :
+		 "D"(&eip)
+       );
+  */
+	Tasks *temp = currentTask;
+	currentTask = task;
+    temp->iPointer = GetEIP();
+	sleep(5);
+    times++;
+	printf("continuing from schedular turn = %d\n",times);
+	if(times>=2){
+	    asm volatile("sti");
+		return ;
+	}
+
+	asm volatile("movl %%ebp, %0" : "=r"(ebp):);
+	sleep(5);
+//    asm (
+//         "movl %%esp, %0;"
+ //        : "=r" (stackCurrent)
+  //       : 
+ //       );
+//	temp->stackPointer = stackCurrent;
+	stackCurrent = currentTask->stackPointer;
+//	temp->basePointer = ebp;
+//	ebp = currentTask->basePointer;
+	printf("old base = %u and new = %u\n",ebp, currentTask->basePointer);
+	sleep(2);
+    asm (
+         "movl %0, %%esp;"
+		 :
+         : "r" (stackCurrent)
+        );
+//	sleep(16);
+	asm volatile("mov %0, %%ebp" : :"r"(ebp));
+	asm volatile("sti");
+//	return;
+/*   asm( "ljmp (%%edi)"
+         :
+         :
+		 "D"(&direct)
+       );
+	   */
+	asm( "jmp (%%edi)"
+         :
+         :
+		 "D"(&eip)
+       );
+	  
+}
+
+void PremptProcessQueue()
+{
+	Tasks *nextTask = currentTask->next;
+    printf("Current \n");
+	DumpProcess(currentTask);
+    printf("Next \n");
+    DumpProcess(nextTask);
+	sleep(2);
+	ScheduleTask(nextTask);
+//	ScheduleTask(currentTask);
+}
+
+void check(int n)
+{
+	Tasks *temp = currentTask;
+	int i;
+	for(i=0;i<n;i++){
+		printf("%d \n",temp->pid);
+		sleep(5);
+		temp = temp->next;
+	}
+}
+
+void DumpProcess(Tasks *task)
+{
+	
+	printf("pid %d ",task->pid);
+	printf("Stack Pointer %d", task->stackPointer);
+	printf("Stack Starting %d", task->stackStartingAddress);  // this we need to copy stack while doing fork.
+	printf("Ipointer %d", task->iPointer);
+	printf("Base %d\n",task->basePointer);
+}
+
+int fork()
+{
+//	asm volatile("cli");
+//	Tasks *newTask = kmalloc(sizeof(Tasks)+100);
+	if(currentTask==NULL){  //this is the first time we are called
+		printf("Fork called first time\n");
+	    currentTask = kmalloc(sizeof(Tasks));
+//	 newTask = kmalloc(sizeof(Tasks));
+		currentTask->pid = newPid;
+		char *stackCurrent;
+    	asm (
+      	   "movl %%esp, %0;"
+      	   : "=r" (stackCurrent)
+      	   : 
+       	 );
+//		currentTask->stackPointer = stackCurrent;
+		currentTask->stackStartingAddress =  firstProcessStartingStack;
+		int turn = 0;
+		uint32 ebp; 
+		asm volatile("movl %%ebp, %0" : "=r"(ebp) :);
+//		currentTask->basePointer = ebp;
+//		currentTask->iPointer = GetEIP();
+  		printf("in single old base = %d and new = %d\n",currentTask->basePointer, currentTask->basePointer);
+		turn++;
+		if(turn>1){
+			return 0;
+		}
+		currentTask->next = currentTask;
+		newPid++;
+	}
+	newTask = kmalloc(sizeof(Tasks)+100);
+	newTask->pid = newPid;
+	uint32 childPid ;
+	childPid = newPid;
+	newPid++;
+	uint32 ebp; 
+	asm volatile("movl %%ebp, %0" : "=r"(ebp) :);
+//	newTask->basePointer = ebp;
+	printf("fork called by process %d\n",currentTask->pid);
+	sleep(1);
+//	Tasks *temp = currentTask->next;
+	currentTask->next = newTask;
+	printf("Task address 1 = %d",currentTask->next);
+//	newTask = currentTask;
+//	newTask->next = temp;
+	newTask->stackStartingAddress =  currentTask->stackStartingAddress;
+	printf("Task address 4= %d",currentTask->next);
+	CopyStack(currentTask, newTask);
+	printf("Task address 3 = %d",currentTask->next);
+	printf("out old base = %d and new = %d\n",currentTask->basePointer, currentTask->basePointer);
+//		char *stackCurrent;
+  //  	asm (
+    //  	   "movl %%esp, %0;"
+      //	   : "=r" (stackCurrent)
+      	//   : 
+ //      	 );
+//		newTask->stackPointer = stackCurrent;
+//		newTask->stackStartingAddress =  firstProcessStartingStack;
+//		asm volatile("movl %%ebp, %0" : "=r"(ebp) :);
+//		newTask->basePointer = ebp;
+//	  currentTask->stackPointer = stackCurrent;
+//	  currentTask->basePointer = ebp;
+//	  currentTask->iPointer = GetEIP();
+	newTask->iPointer = GetEIP();
+	printf("Task address 2= %d",currentTask->next);
+    printf("Camed out\n");
+	sleep(10);
+	printf("Continuing for id %d\n",currentTask->pid);
+	//DumpProcess(currentTask->next);
+	printf("Dumping Task\n");
+	DumpProcess(newTask);
+	printf("Dumping Task %d %d\n",newTask, currentTask->next);
+	DumpProcess(currentTask->next);
+    sleep(10);
+	printf("Still in fork and Child id was %d or %d and current id %d\n",childPid,newTask->pid,currentTask->pid);
+	asm volatile("sti");
+    sleep(10);
+	if(currentTask->pid == childPid){
+		return 0;
+	}
+	else{
+		return childPid;
+	}
+}

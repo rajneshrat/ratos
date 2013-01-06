@@ -1,6 +1,6 @@
 #!/bin/bash
 #make &&
-./update_image.sh 
+sh makefloppyimage.sh 
 
 brctl addbr br0
 tunctl -t tap0 -u root2

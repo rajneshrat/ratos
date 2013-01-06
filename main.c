@@ -7,15 +7,18 @@
 #include "pci.h"
 #include "debug.h"
 #include "pcibiosservice.h"
-int main()//struct multiboot *mboot_ptr)
+uint32 firstProcessStartingStack;
+int main(uint32 startingStackAddress)//struct multiboot *mboot_ptr)
 {
     clr ();
     clr ();
+	firstProcessStartingStack = startingStackAddress;
     asm volatile("cli");
     initializegdt();
     initializeidt();
     asm volatile("sti");
-//    InitializePaging();
+    //InitializePaging();
+//	PremptProcessQueue();
     DetectBios32Service();
     DetectPciBiosService();
     StrobePciDevices();
@@ -39,6 +42,7 @@ int main()//struct multiboot *mboot_ptr)
 // 	SendPacketOut(test);
 //	asm volatile ("int $0xb");
     ShowShell();
+	DoShellProcess();
     while(1);
 //	putch('\n');
 //	asm volatile ("int $0x0");

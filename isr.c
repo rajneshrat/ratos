@@ -6,6 +6,9 @@
 #include "timer.h"
 irq_handler irq_array[252];
 
+#define MaxBufferSize 200
+char KeyboardBuffer[MaxBufferSize];
+static uint32 current;
 void attachirqhandler(irq_handler fun, int irq_number)
 {
     irq_array[irq_number] = fun;
@@ -26,6 +29,8 @@ void isr_handler(registers_t *regs)
     putint(regs->int_no);
 //    while(1);
     putch('\n');
+        outb(0xa0, 0x20); // for pic1
+        outb(0x20, 0x20);  // for pic
 }
 
 //function body taken from http://www.jamesmolloy.co.uk/tutorial_html/6.-Paging.html.
@@ -92,6 +97,38 @@ static void GenProtectionFault( registers_t *reg)
 
 }
 
+int GetKeyboardBuffer(char *output, uint32 startAddress, uint32 length)
+{
+	if(output == NULL){
+		return current;
+	}
+	int i,j=0;
+	for(i=startAddress;i<length;i++){
+		output[j] = KeyboardBuffer[i];
+		j++;
+		i++;
+		if(i==MaxBufferSize){
+			i=0;
+		}
+		if(current==i){
+			return -1;
+		}
+	}
+	return 0;
+}
+
+int GetLastChar(char *ch)
+{
+	if(current == 0){
+		*ch = KeyboardBuffer[MaxBufferSize-1];
+	}
+	else{
+		*ch = KeyboardBuffer[current-1];
+	}
+	return current;
+}
+		
+
 static void doublefault( registers_t *r)
 {
     puts("Interrupt 8 raised by cpu, double fault function\n");
@@ -129,7 +166,12 @@ static void keyboardisr( registers_t *r)
         *  held. If shift is held using the larger lookup table,
         *  you would add 128 to the scancode when you look for it */
         putch(kbdus[scancode]);
-        DoShellProcess(kbdus[scancode]);
+		KeyboardBuffer[current] = kbdus[scancode];
+		current++;
+		if(current==MaxBufferSize){
+			current=0;
+		}
+       // DoShellProcess(kbdus[scancode]);
     }
 //    outb(0x20, 0x20);
 }

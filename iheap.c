@@ -1,8 +1,12 @@
 
 //   linked list is used as the base for heap, whenever a malloc request comes, I just break the hole and give one part from it to malloc request.
+// The current implementation of kmalloc is as follows-
+// We just keep a big buffer in ram for our malloc and are always limited to that, duw to which we also have the upper limit on max maloc we can do.
+// Even we are allocating the frame at starting, but we will still see the page fault in malloc this is because we are not giving the actual frames to our malloc.
 
 #include "iheap.h"
 #include "debug.h"
+
 extern uint32 end;
 uint32 placement_address = (uint32)&end + 0x1000;
 uint32 KMallocStartingAddress = 0;//3*1024*1024*1024; // reinitialized in vm.c;
@@ -18,8 +22,13 @@ struct holes
 
 static struct holes *head = NULL;
 
+extern int VmEnabled;
+
 uint32 kmalloc( uint32 size )
 {
+	if(VmEnabled == 0){
+		return imalloc(size);
+	}
     uint32 returnaddress=0;
     if( head == NULL )
     {

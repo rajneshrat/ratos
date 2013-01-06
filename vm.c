@@ -7,6 +7,7 @@ static int TOTAL_PHYSICAL_MEMORY = 0x10000000;     //512 MB
 extern uint32 KMallocStartingAddress;
 extern uint32 KMallocSize;
 unsigned char Frames[0x10000];
+int VmEnabled = 0;
 int GetFreeFrame(int *index, int *bitpos)  //get the index and bit pos of first free frame.
 {
     int MaximumIndex = TOTAL_PHYSICAL_MEMORY/0x1000;
@@ -59,7 +60,7 @@ int FreeFrame(uint32 frame)  // given the frame addres , will set its position a
 }
 
 
-// written for the malloc implementation. Earlier it was the part of AllocFrame. as in malloc we create the page table from imalloc however for malloc implemetation we need to freeze placement pointer and start the vm.
+// written for the malloc implementation for ratos. Earlier it was the part of AllocFrame. as in malloc we create the page table from imalloc however for malloc implemetation we need to freeze placement pointer and start the vm.
 vpage_t *GetPage(uint32 address, vpagedir_t *dir)  // just create the pagetable but still need to get frame.
 {
     vpage_t *returnaddress = NULL;
@@ -80,7 +81,7 @@ vpage_t *GetPage(uint32 address, vpagedir_t *dir)  // just create the pagetable 
     }
     else
     {
-        printk("creating new page table\n");
+        printf("creating new page table\n");
         vpagetable_t *ptable = (vpagetable_t *)imalloc(sizeof(vpage_t));
         memset(ptable, 0, sizeof(vpagetable_t));
         dir->tables[tableindex] = ptable;
@@ -152,9 +153,13 @@ void InitializePaging() //malloc the space for page directory and initializing i
     {
         // putint(i);
         //	puts("  ");
-        GetPage(i, NULL);
+        GetPage(i, NULL); //we are not allocating the actual frames, those are still free to be allocated by someone else, even they fall in our
+						  // address of malloc. I am doing this only to create the page table because after the vm will start it will be difficult to
+						  // create the pagetable( this will be like chicken egg problem, I need malloc to create page table and page table need malloc
+						  // to create space for page table.
     }
     changePagedir(kernel_directory);
+	VmEnabled = 1;
 }
 
 void changePagedir(vpagedir_t *dir)

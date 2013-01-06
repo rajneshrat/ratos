@@ -1,3 +1,6 @@
+#ifndef __VM.H__
+#define __VM.H__
+
 #include "common.h"
 typedef struct vpage
 {
@@ -23,7 +26,10 @@ typedef struct pagedir
 
 vpagedir_t *working_page_directory;
 
+
 void InitializePaging();
 void AllocFrame(uint32 address, vpagedir_t *dir);
 
 void changePagedir(vpagedir_t *dir);
+
+#endif

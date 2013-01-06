@@ -1,3 +1,3 @@
 
-void DoShellProcess(char command);
+void DoShellProcess();
 void ShowShell();

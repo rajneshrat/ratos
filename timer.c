@@ -10,5 +10,5 @@ void DoTimer()
 //   count++;
     BlinkCursor();
     AddTicks(1);
-
+//	PremptProcessQueue();
 }
