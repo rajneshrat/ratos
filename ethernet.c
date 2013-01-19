@@ -1,3 +1,4 @@
+// This files is to support layer 2 for ratos. It is intermidiate between driver and upper layer
 #include "ethernet.h"
 #include "arp.h"
 

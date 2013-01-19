@@ -80,6 +80,18 @@ http://lxr.linux.no/#linux-old+v0.01/
 I have added the functionality to receive packets. Right now I have written driver for rtl8139 and will stick to it.
 Till now I can receive packets but can not send. Working on transmitting part.
 
-17/non/2012
+17/nov/2012
 
 Completed partial icmp feature. Now I can send arp and icmp(ping) packet. Will work on MP after this and will come back to it after giving a shell prompt.
+
+dec/2012
+shell is now implemented but it is at present part of the kernel. I will move this as a separete application like bash, till now I will use this.
+
+7/jan/2013
+Now I have fork and schedular, but still it is only as framework and is not working when vm is enabled. 
+At next task I will make fork more flexible and will push schedular in timer interrupt. This all will move me in more like multiprocessing.
+
+
+
+
+

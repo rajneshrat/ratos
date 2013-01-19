@@ -71,6 +71,7 @@ static void page_fault(registers_t *regs)
 //   putint(faulting_address);
     puts("\n");
     AllocFrame(faulting_address, NULL);
+	sleep(1000);
 //    outb(0x20, 0x20);
 //   while(1);
 //   PANIC("Page fault");

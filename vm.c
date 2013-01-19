@@ -1,6 +1,5 @@
 #include "vm.h"
 #include "common.h"
-#define MallocHeapSize 1024*1024*50
 extern int end;
 extern uint32 placement_address;// = (uint32)&end;
 static int TOTAL_PHYSICAL_MEMORY = 0x10000000;     //512 MB
@@ -123,7 +122,7 @@ void InitializePaging() //malloc the space for page directory and initializing i
     memset(kernel_directory, 0, sizeof(vpagedir_t));
     int x = 0;
     int last = -1;
-    while(x<placement_address + MallocHeapSize)   // this is one to one mapping of virtual to real memory for kernel code.
+    while(x<placement_address + KMallocSize + 0x4000)   // this is one to one mapping of virtual to real memory for kernel code.
     {
         int add = x/0x1000;
         int indj = add/1024;
@@ -148,12 +147,13 @@ void InitializePaging() //malloc the space for page directory and initializing i
         x = x + 0x1000;
     }
     int i;
-    KMallocStartingAddress = placement_address + 0x3000;
-    for(i=KMallocStartingAddress; i<KMallocSize; i = i + 0x1000)
+    KMallocStartingAddress = placement_address + 0x4000;
+	printf("Malloc address = %d\n", KMallocStartingAddress);
+//    for(i=KMallocStartingAddress; i<KMallocSize; i = i + 0x1000)
     {
         // putint(i);
         //	puts("  ");
-        GetPage(i, NULL); //we are not allocating the actual frames, those are still free to be allocated by someone else, even they fall in our
+  //      GetPage(i, NULL); //we are not allocating the actual frames, those are still free to be allocated by someone else, even they fall in our
 						  // address of malloc. I am doing this only to create the page table because after the vm will start it will be difficult to
 						  // create the pagetable( this will be like chicken egg problem, I need malloc to create page table and page table need malloc
 						  // to create space for page table.

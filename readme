@@ -1,4 +1,4 @@
-This is the minimum os I am developing. 
+This is the minimum os I am developing ( rajnesh raturi ). rajneshraturi25@gmail.com or rajneshraturi@gmail.com 
 
 To compile this you just need gcc, nasm, make, and done.
 To test this you need qemu or can be tested on real hardware.
@@ -26,8 +26,12 @@ For any help or other mail at rajneshraturi25@gmail.com
 
 Present Status-
   At present I am working on implementing multitasking. 
+Multitasking framework is there ( fork and scheduler ) but it works only is virtual memory is diabled. 
 
 Reference -
   For os framework - http://www.jamesmolloy.co.uk/tutorial_html, wikipidia, http://wiki.osdev.org/Expanded_Main_Page, and many others. 
       For more check manuals/oswebsite.
   For networking - Wikipidia and manuals provided by rtl8139 and other interface card manufacturer.
+
+
+

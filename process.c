@@ -12,6 +12,8 @@ struct Process{
 	uint32 stackStartingAddress;  // this we need to copy stack while doing fork.
 	uint32 iPointer;
 	uint32 basePointer;
+	char   pName[20];
+	uint32 state;
 	struct Process *next;
 };
 
@@ -35,21 +37,27 @@ void SaveTask(Tasks *task)
 static struct {
     unsigned long address;
     unsigned short segment;
-} direct ;
+} direct, stackAdd, basePoi ;
 
+void DoPs()
+{
+	printf("Pid		Process Name	 State\n");
+	printf("%d		%s				 %d\n", currentTask->pid, currentTask->pName, currentTask->state);
+	printf("\n");
+}
 
 void DumpStack(Tasks *srcTask)
 {
-	printk("Printing Stack for %d\n",srcTask->pid);
+	printf("Printing Stack for %d\n",srcTask->pid);
 	int sign = 4;
 	uint32 srcStack = (uint32 )srcTask->stackStartingAddress;
 	uint32 srcStackCurrent = (uint32 )srcTask->stackPointer;
-	printk("printing from %u to %u\n",srcStack, srcStackCurrent);
+	printf("printing from %u to %u\n",srcStack, srcStackCurrent);
 	
 	if(srcStack > srcStackCurrent){
 		sign = -4;
 	}
-
+// return;
 	 int count = 0;
 	while(srcStack != srcStackCurrent){
 		if(
@@ -57,12 +65,12 @@ void DumpStack(Tasks *srcTask)
 //		&& 
 		 	srcStackCurrent < srcStack + 10 )
 		{
-			printk("%u, %u   ",srcStack, *(uint32*)srcStack);
+			printf("%u, %u   ",srcStack, *(uint32*)srcStack);
 		    count ++;
-			//printk("\n");	
+			//printf("\n");	
 		}
 		if(count ==4 ){
-			printk("\n");	
+			printf("\n");	
 			count =0;
 		}
    		srcStack = srcStack + sign;
@@ -82,31 +90,52 @@ void CopyStack(Tasks *srcTask, Tasks *dstTask)
          : "=r" (srcStackCurrent)
          : 
         );
-	uint32 dstStack = (uint32 )kmalloc(4000);
-	dstTask->stackStartingAddress = dstStack;
+	uint32 dstStack;
+//	if(srcTask == dstTask){
+//		dstStack = (uint32 )imalloc(4000);
+//	}
+//	else{
+		dstStack = (char *)kmalloc(4000);
+			printf("Doing Check for %d\n",currentTask->pid);
+		//	int n = 100000;
+		//	char  *a = kmalloc(n);
+		//	int i;
+		//	for(i=0;i<n;i++){
+		//		*a = 12;
+		//		*(char *)dstStack = 12;
+		//		a++;
+		//		dstStack++;
+		//	}
+		//	printf("Done");
+ //	}
+	printf("Malloc address = %u\n",dstStack);
+//	dstStack = (uint32 )imalloc(4000);
+ 	printf("Malloc address = %u\n",dstStack);
     uint32 diff =  dstStack - srcStackStart;
-	printk("CopyStack called\n");
+	printf("CopyStack called\n");
 	uint32 ebp;
 	asm volatile("mov %%ebp, %0" : "=r"(ebp) :);
 	dstTask->basePointer = ebp + diff;
-	dstTask->stackPointer = srcStackCurrent + diff;
-	dstStack = dstTask->stackPointer;
+	dstTask->stackPointer = dstStack;//srcStackCurrent + diff;
+//	dstStack = dstTask->stackPointer;
+//	dstTask->stackPointer = dstStack;
 	if(srcStack > srcStackStart){
 		sign = -1;
 	}
 	srcStack = srcStackCurrent;
-	printk("Will copt from %d to %d\n",srcStack,srcStackStart);
+	printf("Will copt from %d to %d\n",srcStack,srcStackStart);
 	while(srcStack != srcStackStart){
 		if(
 		(*(char *)srcStack <= srcTask->stackStartingAddress && *(char *)srcStack >= srcTask->stackPointer)
 	//		||
 	//		(*(char *)srcStack > srcTask->stackStartingAddress && *(char *)srcStack < srcTask->stackPointer) 
 		) {
-			*(char *)dstStack = *(char *)srcStack + diff;
+			*(char *)dstStack = *(char *)srcStack + diff ;
 		}
 		else{
-			*(char *)dstStack =  *(char *)srcStack ;
+		*(char *)dstStack =  *(char *)srcStack ;
 	    }		
+		//	printf("Value copying for %u with %u\n",dstStack, *(uint32 *)(srcStack));
 		srcStack = srcStack + sign;
 		dstStack = dstStack + sign;
 	}
@@ -118,20 +147,31 @@ void CopyStack(Tasks *srcTask, Tasks *dstTask)
 	else{
 		*(char *)dstStack = *(char *)srcStack ;
 	}
-	EIP = GetEIP();
-	dstTask->iPointer = EIP;
-//	DumpStack(dstTask);
+	dstTask->stackStartingAddress = dstStack;
+//	EIP = GetEIP();
+//	int a = 5;
+	dstTask->iPointer = GetEIP();
+//	printf("Camed from %d and %d\n",currentTask->pid,a);
 //	DumpStack(srcTask);
+//	DumpStack(dstTask);
 }
-
+int loop = 0;
 void ScheduleTask(Tasks *task)
 {
 	int times=0;
 	asm volatile("cli");
-	printk("Scheduler Called ");
-    printk("current task id = %d ",currentTask->pid);
-	printk("and next task id = %d\n",task->pid);
-    currentTask->iPointer = GetEIP();
+	printf("Scheduler Called ");
+    printf("current task id = %d ",currentTask->pid);
+	printf("and next task id = %d\n",task->pid);
+    loop = 0;
+	currentTask->iPointer = GetEIP();
+	loop++;
+	if( loop >=2 ){
+	    printf("Exiting from schedule loop %d\n", loop);
+		asm volatile("sti");  //the process which was interrrupted will return from here.
+		return;
+	}
+	printf("Address = %x and %x\n",task->iPointer, currentTask->iPointer);
 	uint32 ebp;
 	asm volatile("movl %%ebp, %0" : "=r"(ebp):);
 	currentTask->basePointer = ebp;
@@ -142,47 +182,46 @@ void ScheduleTask(Tasks *task)
          : 
         );
 	currentTask->stackPointer = esp;
-	char *stackCurrent;
-	stackCurrent = task->stackPointer;
-	times++;
-    sleep(5);
-	if(times>=2){
-	    asm volatile("sti");  //the process which was interrrupted will return from here.
-		return ;
-	}
-    /*direct.address = eip;
+/*	asm( "jmp (%%edi)"
+         :
+         :
+		 "D"(&direct)
+       );
+  */
+	currentTask = task;  //making new process as current
     uint32 kernelcodesegment = 0;
     asm ("movl %%cs, %0;"
          : "=r" (kernelcodesegment)
          :);
     direct.segment = kernelcodesegment;
-	asm( "jmp (%%edi)"
-         :
-         :
-		 "D"(&eip)
-       );
-  */
-	currentTask = task;  //making new process as current
+    stackAdd.segment = kernelcodesegment;
+    direct.address = currentTask->iPointer;
+    stackAdd.address = currentTask->stackPointer;
+    basePoi.segment = kernelcodesegment;
+    basePoi.address = currentTask->basePointer;
+	//asm volatile("mov %0, %%ebp" : :"r"(currentTask->basePointer));
+	asm volatile("mov %0, %%ebp" : :"r"(basePoi));
     asm (
          "movl %0, %%esp;"
 		 :
-         : "r" (currentTask->stackPointer)
+         //: "r" (currentTask->stackPointer)
+         : "r" (stackAdd)
         );
-	asm volatile("mov %0, %%ebp" : :"r"(currentTask->basePointer));
+	printf("Changing Process %d current id\n", currentTask->pid);
 	asm volatile("sti");
-/*   asm( "ljmp (%%edi)"
+ 	asm( "ljmp (%%edi)"
          :
          :
 		 "D"(&direct)
        );
-*/
+
 	//asm volatile("pop %eax");
-	printk("Changing Process\n");
-	asm( "jmp (%%edi)"
+/*	asm( "jmp (%%edi)"
          :
          :
 		 "D"(&currentTask->iPointer)  // it is necessary to have this as static as after changing basepointer values will change.
        );
+*/
 }
 
 void PremptProcessQueue()
@@ -196,8 +235,7 @@ void check(int n)
 	Tasks *temp = currentTask;
 	int i;
 	for(i=0;i<n;i++){
-		printk("%d \n",temp->pid);
-		sleep(5);
+		printf("%d \n",temp->pid);
 		temp = temp->next;
 	}
 }
@@ -205,18 +243,18 @@ void check(int n)
 void DumpProcess(Tasks *task)
 {
 	
-	printk("pid %d ",task->pid);
-	printk("Stack Pointer %d", task->stackPointer);
-	printk("Stack Starting %d", task->stackStartingAddress);  // this we need to copy stack while doing fork.
-	printk("Ipointer %d", task->iPointer);
-	printk("Base %d\n",task->basePointer);
+	printf("pid %d ",task->pid);
+	printf("Stack Pointer %d", task->stackPointer);
+	printf("Stack Starting %d", task->stackStartingAddress);  // this we need to copy stack while doing fork.
+	printf("Ipointer %d", task->iPointer);
+	printf("Base %d\n",task->basePointer);
 }
 
 int fork()
 {
 	asm volatile("cli");
 	if(currentTask==NULL){  //this is the first time we are called
-		printk("Fork called first time will do initialization\n");
+		printf("Fork called first time will do initialization\n");
 	    currentTask = kmalloc(sizeof(Tasks));
 		currentTask->pid = newPid;
 		char *stackCurrent;
@@ -229,9 +267,10 @@ int fork()
 		uint32 ebp; 
 		asm volatile("movl %%ebp, %0" : "=r"(ebp) :);
 		currentTask->basePointer = ebp;
-		currentTask->iPointer = GetEIP();
+		//currentTask->iPointer = GetEIP();
 		currentTask->next = currentTask;
 		newPid++;
+//		CopyStack(currentTask, currentTask);
 	}
 	uint32 parentId = currentTask->pid;
 	Tasks *newTask = kmalloc(sizeof(Tasks));
@@ -239,7 +278,7 @@ int fork()
 	uint32 childPid ;
 	childPid = newPid;
 	newPid++;
-	printk("fork called by process %d\n",currentTask->pid);
+	printf("fork called by process %d\n",currentTask->pid);
 	Tasks *temp = currentTask->next;
 	currentTask->next = newTask;
 	newTask->next = temp;

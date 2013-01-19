@@ -1,3 +1,4 @@
+// This files reads from bios for pci related stuff for ratos.
 #include "pcibiosservice.h"
 #include "biosservice.h"
 

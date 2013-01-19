@@ -1,3 +1,4 @@
+// This is for icmp support for ratos. Right now it only has ping feature
 #include "icmp.h"
 #include "common.h"
 #include "screen.h"
