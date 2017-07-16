@@ -1,0 +1,7 @@
+
+qemu-img create -f raw disk-img.raw 2G
+losetup /dev/loop1 disk-img2.raw
+mkfs disk-img.raw
+mount  /dev/loop1 /mnt
+fdisk /dev/loop1
+make bootable
